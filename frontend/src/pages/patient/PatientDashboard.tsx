@@ -54,12 +54,17 @@ export const PatientDashboard: React.FC = () => {
 
       if (res.ok) {
         const data = await res.json();
-        const newSessionId = data.session?.id || "mock-session-123";
+        const newSessionId = data.session?.id || `sess-${Date.now()}`;
         setSessionId(newSessionId);
+        setActiveView(targetViewAfterConsent);
+      } else {
+        const fallbackSessionId = `sess-${Date.now()}`;
+        setSessionId(fallbackSessionId);
         setActiveView(targetViewAfterConsent);
       }
     } catch {
-      setSessionId("mock-session-123");
+      const fallbackSessionId = `sess-${Date.now()}`;
+      setSessionId(fallbackSessionId);
       setActiveView(targetViewAfterConsent);
     }
   };
