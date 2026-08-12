@@ -59,7 +59,37 @@
 
 ## Phase 1 — Auth, Database Schema, RBAC
 
-**Status:** 🔲 Not started
+**Date:** 2026-08-12
+**Status:** ✅ Complete
+
+### What was built
+
+- **Database Migrations (`backend/migrations/`)**:
+  - `001_schema.sql`: 7 core tables (`profiles`, `assessment_sessions`, `speech_results`, `gaze_results`, `cognitive_game_results`, `fused_reports`, `doctor_patient_links`)
+  - `002_rls.sql`: Row Level Security policies for all tables (patient/doctor/admin access scoping)
+  - `003_profile_trigger.sql`: Trigger function `handle_new_user()` auto-creating profile records upon signup
+- **Backend Auth & RBAC (`backend/app/core/auth.py` & `routes/auth.py`)**:
+  - Supabase JWT verification dependency (`get_current_user`, `require_role`)
+  - `GET /api/auth/me`: verified token user identity check
+  - `GET /api/admin/pending-links` & `POST /api/admin/approve-link`: admin-gated doctor-patient link management
+  - 5 new unit tests in `backend/tests/test_auth.py` verifying 401 unauthenticated, 403 forbidden, and 200 authorised access
+- **Frontend Auth & Dashboards (`frontend/src/`)**:
+  - `lib/supabase.ts`: Supabase JS client singleton
+  - `contexts/AuthContext.tsx`: React Context providing user identity, role, and JWT token state
+  - `pages/LoginPage.tsx`: Sign-in/Sign-up tabs with role selection (Patient / Doctor), Google OAuth button, and mandatory disclaimer
+  - `pages/patient/PatientDashboard.tsx`: Patient portal shell
+  - `pages/doctor/DoctorDashboard.tsx`: Clinician portal shell
+  - `pages/admin/AdminDashboard.tsx`: Admin console for reviewing & approving doctor-patient link requests
+  - `App.tsx`: Role-aware `ProtectedRoute` guards and navigation routes
+
+### Definition of Done — Phase 1
+
+- [x] Sign-up/login UI created against Supabase Auth architecture
+- [x] RLS policies created in SQL migration files (001, 002, 003)
+- [x] FastAPI routes check verified Supabase JWT token & role on server side
+- [x] Admin approval UI flow built for `doctor_patient_links`
+- [x] Backend tests verify 401 on missing/invalid token and 403 on role mismatch
+- [x] `PROGRESS.md` updated
 
 ---
 
