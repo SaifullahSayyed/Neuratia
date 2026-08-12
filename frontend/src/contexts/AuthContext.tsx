@@ -3,8 +3,8 @@ import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
 
 export interface UserProfile {
-  id: str;
-  full_name: str;
+  id: string;
+  full_name: string;
   role: "patient" | "doctor" | "admin";
   age?: number;
   education_level?: string;
