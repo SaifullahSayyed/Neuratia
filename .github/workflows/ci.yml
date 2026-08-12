@@ -1,4 +1,4 @@
-name: CI
+name: CI — Neuratia
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: ["**"]
 
 jobs:
-  # ── Frontend: ESLint + TypeScript type-check ────────────────────────────────
+  # ── Frontend: oxlint + TypeScript type-check ─────────────────────────────────
   frontend-lint:
     name: Frontend — Lint & Type-check
     runs-on: ubuntu-latest
@@ -28,13 +28,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: ESLint
+      - name: oxlint
         run: npm run lint
 
       - name: TypeScript type-check
         run: npx tsc --noEmit
 
-  # ── Backend: ruff linter ────────────────────────────────────────────────────
+  # ── Backend: ruff linter ─────────────────────────────────────────────────────
   backend-lint:
     name: Backend — Ruff Lint
     runs-on: ubuntu-latest
@@ -56,9 +56,9 @@ jobs:
       - name: Ruff check
         run: ruff check app/
 
-  # ── Backend: pytest (grows as routes are added in later phases) ─────────────
+  # ── Backend: pytest ──────────────────────────────────────────────────────────
   backend-test:
-    name: Backend — Tests
+    name: Backend — Tests (43 tests)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -76,12 +76,30 @@ jobs:
         run: pip install -r requirements.txt pytest pytest-asyncio httpx
 
       - name: Run tests
-        # Env vars use placeholder values — tests must not require real Supabase/Groq at this stage
+        # All placeholder env vars — tests must pass with no real API credentials
         env:
           SUPABASE_URL: https://placeholder.supabase.co
           SUPABASE_ANON_KEY: placeholder-anon-key
           SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role-key
+          SUPABASE_JWT_SECRET: placeholder-jwt-secret
           GROQ_API_KEY: placeholder-groq-key
           GEMINI_API_KEY: placeholder-gemini-key
           ENVIRONMENT: test
-        run: pytest tests/ -v --tb=short || echo "No tests yet — add them in Phase 7"
+        run: pytest tests/ -v --tb=short
+
+  # ── Secrets scan: block any committed secrets before merge ───────────────────
+  secrets-scan:
+    name: Secrets Scan — TruffleHog
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog OSS scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified

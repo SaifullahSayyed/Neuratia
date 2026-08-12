@@ -18,31 +18,31 @@ router = APIRouter(prefix="/api/sessions", tags=["sessions"])
 class StartSessionRequest(BaseModel):
     consent_given: bool = True
     age: int | None = Field(default=None, ge=18, le=120)
-    education_level: str | None = None
+    education_level: str | None = Field(default=None, max_length=64)
 
 
 class CognitiveResultSubmission(BaseModel):
-    session_id: str
-    game_type: str  # 'digit_span' | 'sequence_memory'
+    session_id: str = Field(max_length=64)
+    game_type: str = Field(max_length=32)  # 'digit_span' | 'sequence_memory'
     raw_events: list[dict[str, Any]] | dict[str, Any]
-    age_band: str
-    education_band: str
+    age_band: str = Field(max_length=32)
+    education_band: str = Field(max_length=32)
     sub_score: float = Field(ge=0.0, le=1.0)
 
 
 class SpeechSubmission(BaseModel):
-    session_id: str
-    audio_storage_path: str
-    transcript: str | None = None
+    session_id: str = Field(max_length=64)
+    audio_storage_path: str = Field(max_length=512)
+    transcript: str | None = Field(default=None, max_length=8000)
     metadata: dict[str, Any] | None = None
 
 
 class GazeSubmission(BaseModel):
-    session_id: str
-    calibration_quality: float  # residual error in pixels
-    fixation_features: dict[str, Any]  # fixation stability, pursuit latency, antisaccade error rate
+    session_id: str = Field(max_length=64)
+    calibration_quality: float = Field(ge=0.0, le=500.0)
+    fixation_features: dict[str, Any]
     sub_score: float = Field(ge=0.0, le=1.0)
-    model_version: str = "gaze_client_v1"
+    model_version: str = Field(default="gaze_client_v1", max_length=64)
 
 
 @router.post("/start")

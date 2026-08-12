@@ -335,9 +335,57 @@
 
 ---
 
-## Phase 7 — Security Hardening, Tests, CI
+## Phase 7 — Security Hardening, Compliance Framing & Tests
 
-**Status:** 🔲 Not started
+**Date:** 2026-08-12
+**Status:** ✅ Complete
+
+### What was built
+
+- **Security Headers Middleware (`backend/app/core/security.py`)**:
+  - OWASP-recommended security headers added to all HTTP responses:
+    - `X-Content-Type-Options: nosniff`
+    - `X-Frame-Options: DENY`
+    - `X-XSS-Protection: 0`
+    - `Referrer-Policy: strict-origin-when-cross-origin`
+    - `Content-Security-Policy: default-src 'self' ...`
+    - `Permissions-Policy: camera=(self), microphone=(self)`
+    - `Strict-Transport-Security` (production only, 1-year HSTS)
+
+- **In-Memory Rate Limiting (`backend/app/core/rate_limit.py`)**:
+  - Per-IP sliding-window rate limiter (free-tier compatible, zero Redis dependency)
+  - Tighter limits on sensitive endpoints:
+    - `/api/sessions/generate-report`: 5 req/min
+    - `/api/sessions/process-speech`: 10 req/min
+    - `/api/sessions/process-gaze`: 20 req/min
+    - General API: 60 req/min
+  - Returns `429 Too Many Requests` with `Retry-After` header
+
+- **Input Validation Hardening (`backend/app/api/routes/*.py`)**:
+  - Length and range constraints added to all Pydantic request models:
+    - `session_id`: max_length=64
+    - `age`: 18–120
+    - `sub_score`, `speech_score`, `gaze_score`, `cognitive_score`: [0.0, 1.0]
+    - `calibration_quality`: [0.0, 500.0]
+    - `transcript`: max_length=8000
+  - Rejects oversized, negative, or malformed inputs with clean `422 Unprocessable Entity`
+
+- **Hardened CI & Secrets Scanning (`.github/workflows/ci.yml`)**:
+  - Added `SUPABASE_JWT_SECRET` to test execution environment
+  - Added **TruffleHog OSS scan** job to automatically block committed secrets before merge
+
+- **Security Test Suite (`backend/tests/test_security.py`)**:
+  - 21 security tests added covering security headers, rate limiter logic, input validation,
+    auth enforcement on all protected routes, SQL injection parameterization safety, and env completeness
+  - **64/64 total backend tests passing**
+
+### Definition of Done — Phase 7
+
+- [x] SecurityHeadersMiddleware active (CSP, X-Frame-Options, nosniff, Permissions-Policy)
+- [x] RateLimitMiddleware active with path-based limits and 429 Retry-After response
+- [x] Pydantic models validate input ranges, string lengths, and types
+- [x] CI pipeline runs TruffleHog secrets scan and enforces zero failing tests
+- [x] 64/64 pytest tests pass cleanly; ruff and tsc clean; PROGRESS.md updated
 
 ---
 

@@ -21,7 +21,7 @@ router = APIRouter(prefix="/api/sessions", tags=["fusion"])
 
 
 class FuseRequest(BaseModel):
-    session_id: str
+    session_id: str = Field(max_length=64)
     speech_score: float | None = Field(default=None, ge=0.0, le=1.0)
     gaze_score: float | None = Field(default=None, ge=0.0, le=1.0)
     cognitive_score: float | None = Field(default=None, ge=0.0, le=1.0)
