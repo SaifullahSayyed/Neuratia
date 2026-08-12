@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  # ── Frontend: ESLint + TypeScript type-check ────────────────────────────────
+  frontend-lint:
+    name: Frontend — Lint & Type-check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: TypeScript type-check
+        run: npx tsc --noEmit
+
+  # ── Backend: ruff linter ────────────────────────────────────────────────────
+  backend-lint:
+    name: Backend — Ruff Lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ruff
+        run: pip install ruff==0.8.6
+
+      - name: Ruff check
+        run: ruff check app/
+
+  # ── Backend: pytest (grows as routes are added in later phases) ─────────────
+  backend-test:
+    name: Backend — Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest pytest-asyncio httpx
+
+      - name: Run tests
+        # Env vars use placeholder values — tests must not require real Supabase/Groq at this stage
+        env:
+          SUPABASE_URL: https://placeholder.supabase.co
+          SUPABASE_ANON_KEY: placeholder-anon-key
+          SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role-key
+          GROQ_API_KEY: placeholder-groq-key
+          GEMINI_API_KEY: placeholder-gemini-key
+          ENVIRONMENT: test
+        run: pytest tests/ -v --tb=short || echo "No tests yet — add them in Phase 7"
