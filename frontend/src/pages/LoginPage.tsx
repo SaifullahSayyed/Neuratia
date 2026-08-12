@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import { supabase } from "../lib/supabase";
 
 export const LoginPage: React.FC = () => {
+  const { loginDemoUser } = useAuth();
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,10 +45,20 @@ export const LoginPage: React.FC = () => {
         navigate("/");
       }
     } catch (err: any) {
-      setErrorMsg(err.message || "An authentication error occurred.");
+      const msg = err.message || "An authentication error occurred.";
+      if (msg.includes("Failed to fetch") || msg.includes("fetch")) {
+        setErrorMsg("Live Supabase connection pending. Use Demo Mode below to enter instantly!");
+      } else {
+        setErrorMsg(msg);
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDemoSignIn = (targetRole: "patient" | "doctor") => {
+    loginDemoUser(targetRole);
+    navigate(targetRole === "doctor" ? "/doctor" : "/patient");
   };
 
   const handleGoogleLogin = async () => {
@@ -62,14 +74,13 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 bg-[#080c14] text-slate-200">
-      {/* Glow background */}
       <div
         className="pointer-events-none absolute h-[380px] w-[380px] rounded-full opacity-20 blur-3xl"
         style={{ background: "radial-gradient(circle, #7c3aed 0%, transparent 70%)" }}
       />
 
-      <div className="relative w-full max-w-md bg-slate-900/60 backdrop-blur-xl border border-white/10 p-8 rounded-2xl shadow-2xl">
-        <div className="text-center mb-6">
+      <div className="relative w-full max-w-md bg-slate-900/60 backdrop-blur-xl border border-white/10 p-8 rounded-2xl shadow-2xl space-y-5">
+        <div className="text-center">
           <h1 className="text-2xl font-bold tracking-tight text-white font-['Space_Grotesk']">
             Neuratia<span className="text-violet-400">Detect</span>
           </h1>
@@ -79,7 +90,7 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* Tab switcher */}
-        <div className="flex border-b border-white/10 mb-6 text-sm font-medium">
+        <div className="flex border-b border-white/10 text-sm font-medium">
           <button
             type="button"
             className={`flex-1 pb-2 text-center border-b-2 transition-all ${
@@ -101,12 +112,42 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {errorMsg && (
-          <div className="mb-4 p-3 rounded-lg border border-red-500/30 bg-red-500/10 text-red-300 text-xs">
-            {errorMsg}
+          <div className="p-3 rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-300 text-xs space-y-2">
+            <div>⚠️ {errorMsg}</div>
+            <button
+              onClick={() => handleDemoSignIn("patient")}
+              className="w-full py-1.5 rounded bg-violet-600 hover:bg-violet-500 text-white font-medium text-xs transition-all"
+            >
+              Enter Demo Patient Portal ✦
+            </button>
           </div>
         )}
 
-        <form onSubmit={handleAuth} className="space-y-4 text-sm">
+        {/* One-Click Quick Demo Login Box */}
+        <div className="p-3.5 rounded-xl bg-violet-500/10 border border-violet-500/20 text-xs space-y-2">
+          <div className="text-violet-300 font-semibold flex items-center justify-between">
+            <span>⚡ Quick Demo Mode (Instant Access)</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-violet-500/20 text-violet-200 font-mono">No Keys Needed</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => handleDemoSignIn("patient")}
+              className="py-2 px-3 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-xs font-medium transition-all shadow"
+            >
+              Demo Patient Portal
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDemoSignIn("doctor")}
+              className="py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 text-xs font-medium transition-all"
+            >
+              Demo Doctor Portal
+            </button>
+          </div>
+        </div>
+
+        <form onSubmit={handleAuth} className="space-y-4 text-sm pt-1">
           {isSignUp && (
             <div>
               <label className="block text-slate-300 text-xs font-medium mb-1">Full Name</label>
@@ -178,13 +219,13 @@ export const LoginPage: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-medium shadow-lg shadow-violet-600/30 transition-all disabled:opacity-50 mt-2"
+            className="w-full py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 text-xs font-medium transition-all disabled:opacity-50"
           >
-            {loading ? "Processing..." : isSignUp ? "Create Account" : "Sign In"}
+            {loading ? "Connecting..." : isSignUp ? "Create Supabase Account" : "Sign In with Supabase"}
           </button>
         </form>
 
-        <div className="relative my-6 text-center">
+        <div className="relative text-center">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-white/10" />
           </div>
@@ -217,8 +258,8 @@ export const LoginPage: React.FC = () => {
           Continue with Google
         </button>
 
-        {/* Mandatory Non-Diagnostic Disclaimer */}
-        <div className="mt-6 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300 leading-relaxed">
+        {/* Disclaimer */}
+        <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300 leading-relaxed">
           ⚠️ <strong>Screening Aid Only:</strong> Neuratia is a non-diagnostic research prototype.
           It does not provide medical diagnoses or replace clinical evaluations.
         </div>

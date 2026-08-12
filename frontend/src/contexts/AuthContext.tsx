@@ -18,6 +18,7 @@ interface AuthContextType {
   loading: boolean;
   signOut: () => Promise<void>;
   token: string | null;
+  loginDemoUser: (role?: "patient" | "doctor" | "admin") => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -28,6 +29,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   signOut: async () => {},
   token: null,
+  loginDemoUser: () => {},
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -47,6 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setProfile(data as UserProfile);
       }
     } catch {
+      // Continue with metadata role
     }
   };
 
@@ -57,6 +60,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (session?.user) {
         fetchProfile(session.user.id);
       }
+      setLoading(false);
+    }).catch(() => {
       setLoading(false);
     });
 
@@ -74,8 +79,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => subscription.unsubscribe();
   }, []);
 
+  const loginDemoUser = (targetRole: "patient" | "doctor" | "admin" = "patient") => {
+    const demoId = `demo-${targetRole}-123`;
+    const mockUser: User = {
+      id: demoId,
+      app_metadata: {},
+      user_metadata: { role: targetRole, full_name: `Demo ${targetRole.toUpperCase()}` },
+      aud: "authenticated",
+      created_at: new Date().toISOString(),
+    } as any;
+
+    const mockSession: Session = {
+      access_token: "mock-demo-jwt-token",
+      token_type: "bearer",
+      expires_in: 3600,
+      refresh_token: "mock-refresh",
+      user: mockUser,
+    };
+
+    setUser(mockUser);
+    setSession(mockSession);
+    setProfile({
+      id: demoId,
+      full_name: `Demo ${targetRole.toUpperCase()}`,
+      role: targetRole,
+    });
+  };
+
   const signOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // Ignore network errors on sign out
+    }
     setSession(null);
     setUser(null);
     setProfile(null);
@@ -85,7 +121,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const token = session?.access_token || null;
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, role, loading, signOut, token }}>
+    <AuthContext.Provider value={{ user, session, profile, role, loading, signOut, token, loginDemoUser }}>
       {children}
     </AuthContext.Provider>
   );
