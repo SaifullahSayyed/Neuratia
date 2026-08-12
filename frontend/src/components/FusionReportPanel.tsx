@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
+import { ReportViewer } from "./ReportViewer";
 
 interface FusionReportPanelProps {
   sessionId: string;
@@ -258,6 +259,12 @@ export const FusionReportPanel: React.FC<FusionReportPanelProps> = ({
             diagnostic tool. It does not constitute medical advice or a clinical
             diagnosis. Always consult a qualified neurologist or clinician.
           </p>
+
+          {/* AI Report Generation (Phase 6) */}
+          <ReportViewer
+            sessionId={sessionId}
+            fusionResult={result as unknown as Record<string, unknown>}
+          />
 
           <button
             onClick={() => setResult(null)}

@@ -282,7 +282,56 @@
 
 ## Phase 6 — LLM + RAG Reporting Layer
 
-**Status:** 🔲 Not started
+**Date:** 2026-08-12
+**Status:** ✅ Complete
+
+### What was built
+
+- **Reference Corpus (`docs/reference-corpus/corpus.md`)**:
+  - 7 evidence-based chunks from peer-reviewed literature (Fraser 2016, Luz 2021,
+    Antoniades 2013, Holmqvist 2011, Monaco 2013, Toth 2018, Petersen 2018 AAN)
+  - Covers speech biomarkers, acoustic features, gaze oculomotor thresholds,
+    digit span norms, multimodal fusion evidence, and clinical risk framing
+
+- **TF-IDF RAG Retriever (`backend/app/services/rag_retrieval.py`)**:
+  - Pure stdlib + regex TF-IDF cosine similarity retrieval — **zero paid vector DB**
+  - Parses corpus.md sections into `(topic, content)` tuples at startup
+  - `retrieve(query, top_k)` returns ranked chunks for prompt injection
+  - Inline fallback corpus for unit test environments
+
+- **LLM Report Generator (`backend/app/services/report_generator.py`)**:
+  - Builds a structured Gemini prompt from fusion result + retrieved RAG context
+  - Calls **Gemini 1.5 Flash** (free tier, Google AI Studio key)
+  - **Template fallback** when key is placeholder — maintains correct framing
+  - Every report MUST contain `NON-DIAGNOSTIC DISCLAIMER` verbatim (enforced in tests)
+  - "Warrants further evaluation" language, never definitive diagnosis
+
+- **Reports API Route (`backend/app/api/routes/reports.py`)**:
+  - `POST /api/sessions/generate-report` — JWT-authenticated
+  - Persists `report_text` and `report_model` to Supabase `fused_reports` table
+  - Validates fusion result has actual data before generating
+
+- **Backend Tests (`backend/tests/test_reports.py`)**:
+  - 10 new tests: RAG retrieval, relevance ordering, top-k, disclaimer enforcement,
+    high-risk framing, missing modality, template fallback, API auth/response
+  - **43/43 total backend tests passing**
+
+- **`ReportViewer` Component (`frontend/src/components/ReportViewer.tsx`)**:
+  - Inline markdown renderer (bold, headers, bullets — no external library)
+  - Expandable RAG context accordion showing retrieved literature chunks
+  - Animated loading spinner during Gemini API call
+  - Live vs. template mode badge
+  - Renders inside `FusionReportPanel` after composite score is computed
+
+### Definition of Done — Phase 6
+
+- [x] 7-chunk reference corpus committed to `docs/reference-corpus/corpus.md`
+- [x] TF-IDF RAG retriever selects top-3 relevant chunks by query (zero vector DB)
+- [x] Gemini 1.5 Flash called with RAG-augmented prompt; template fallback if key is placeholder
+- [x] Every report enforces non-diagnostic disclaimer (verified in tests)
+- [x] `POST /api/sessions/generate-report` route authenticated, persists to DB
+- [x] `ReportViewer` renders in-browser with RAG accordion and model badge
+- [x] ruff, tsc, oxlint all pass cleanly; 43/43 pytest tests green; PROGRESS.md updated
 
 ---
 

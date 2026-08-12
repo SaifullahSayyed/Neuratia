@@ -9,6 +9,7 @@ from app.api.routes.auth import router as auth_router
 from app.api.routes.fusion import router as fusion_router
 from app.api.routes.gaze import router as gaze_router
 from app.api.routes.health import router as health_router
+from app.api.routes.reports import router as reports_router
 from app.api.routes.sessions import router as sessions_router
 from app.api.routes.speech import router as speech_router
 from app.core.config import settings
@@ -46,6 +47,7 @@ app.include_router(sessions_router)
 app.include_router(speech_router)
 app.include_router(gaze_router)
 app.include_router(fusion_router)
+app.include_router(reports_router)
 
 
 @app.get("/", include_in_schema=False)
