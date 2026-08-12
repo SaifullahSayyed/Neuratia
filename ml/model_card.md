@@ -40,3 +40,23 @@ This model processes extracted acoustic features (13 MFCCs, local jitter, local 
 - **Language Dependency:** Currently trained on English spontaneous speech. Performance on non-English speech or heavy regional dialects has not been validated.
 - **Microphone Variability:** Audio captured via low-quality web microphones may inflate jitter/shimmer measurements.
 - **Non-Diagnostic:** Output is a risk-flag sub-score intended to support doctor-patient discussion. It is **not** a clinical diagnostic tool.
+
+---
+
+## Model Card: Gaze / Oculomotor Classifier (`gaze_model_v1`)
+
+> **Model Version:** `gaze_model_v1.joblib` / `gaze_literature_v1`
+> **Primary Paradigm:** 9-point Calibration + Fixation Stability + Smooth Pursuit + **Antisaccade Task**
+> **Model Architecture:** Logistic Regression on literature-cited oculomotor metrics
+
+### Feature Thresholds & Scientific Citations
+
+1. **Antisaccade Error Rate (>0.30 Threshold)** — Measure of prefrontal inhibitory control deficit (*Antoniades et al. 2013, Journal of Neurosci Methods*).
+2. **Fixation Stability / Dispersion (>15.0px Threshold)** — Measure of visual fixation drift (*Holmqvist et al. 2011, Oxford Univ Press*).
+3. **Saccadic Latency (>250ms Threshold)** — Measure of saccade initiation reaction time delay (*Opwononi et al. 2023, Frontiers in Aging Neurosci*).
+4. **Calibration Quality Gating (>10.0px Threshold)** — Residual calibration error >10px flags session as `low_confidence = True` (*Holmqvist et al. 2011*).
+
+### UI Framing
+
+If uncalibrated to a real clinical cohort, score is labeled explicitly as:
+`Unvalidated Engagement Metric (Literature-Cited Thresholds)`

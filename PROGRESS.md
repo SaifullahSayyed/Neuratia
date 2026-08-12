@@ -176,9 +176,59 @@
 
 ## Phase 4 — Gaze/Oculomotor Scoring Backend
 
-**Status:** 🔲 Not started
+**Date:** 2026-08-12
+**Status:** ✅ Complete
+
+### What was built
+
+- **Oculomotor Metric Extractor (`backend/app/services/gaze_metrics.py`)**:
+  - Computes fixation dispersion (px), saccade latency (ms), and antisaccade error rate
+  - **Zero magic numbers** — every constant is cited to published literature:
+    - Antisaccade error rate threshold `> 0.30` → *Antoniades et al. (2013)*
+    - Fixation dispersion threshold `> 15.0px` → *Holmqvist et al. (2011)*
+    - Saccadic latency threshold `> 250ms` → *Opwononi et al. (2023)*
+    - Calibration quality gating `> 10.0px` → *Holmqvist et al. (2011)*
+  - Supports both raw `sample_logs` (iris x/y coordinates from MediaPipe) and pre-aggregated feature dicts
+
+- **Gaze Pipeline & Calibration Quality Gating (`backend/app/services/gaze_pipeline.py`)**:
+  - Loads trained `gaze_model_v1.joblib` artifact (if present) via `joblib`
+  - **Calibration gating**: residual calibration error `> 10.0px` flags session with `is_low_confidence = True`
+  - In demo/untrained mode: threshold scoring labels result as `Unvalidated Engagement Metric (Literature-Cited Thresholds)`
+
+- **Model Card Update (`ml/model_card.md`)**:
+  - Added `Gaze Classifier (gaze_model_v1)` section documenting feature thresholds, literature citations, and UI framing rules
+
+- **Gaze Training Script (`ml/train_gaze_pipeline.py`)**:
+  - Logistic Regression classifier on 3 oculomotor features (dispersion, latency, antisaccade rate)
+  - Synthetic distribution derived from Antoniades 2013 & Opwononi 2023 paper baselines
+  - Run on Google Colab/Kaggle to generate `gaze_model_v1.joblib`
+
+- **Backend Gaze API Route (`backend/app/api/routes/gaze.py`)**:
+  - `POST /api/sessions/process-gaze` — authenticated route calling the full pipeline
+  - Persists `sub_score`, `model_version`, `calibration_quality`, and features to Supabase `gaze_results` table
+  - Included as `gaze_router` in `backend/app/main.py`
+
+- **Frontend Gaze Result Display (`frontend/src/pages/patient/GazeTrackerTask.tsx`)**:
+  - Shows fixation dispersion (px), saccadic latency (ms), and antisaccade error rate (%)
+  - Displays amber low-confidence calibration warning when `calibration_quality > 10px`
+  - Lists all 3 scientific literature citations inline in the result panel
+  - Labels score with `Unvalidated Engagement Metric (Literature-Cited Thresholds)` when untrained
+
+- **Backend Tests (`backend/tests/test_gaze.py`)**:
+  - 5 new tests: metric extractor thresholds, calibration gating pass/fail, API 401 unauthenticated, API 200 authenticated
+  - **22/22 total backend tests passing**
+
+### Definition of Done — Phase 4
+
+- [x] Literature-cited metric extraction (fixation dispersion, saccade latency, antisaccade error rate)
+- [x] Calibration quality gating (>10px error → `is_low_confidence = True`)
+- [x] Model training script (`ml/train_gaze_pipeline.py`) + model card updated
+- [x] `POST /api/sessions/process-gaze` route authenticated and persists results
+- [x] Frontend shows metrics, calibration warning, citations, and score label
+- [x] ruff, oxlint, tsc all pass cleanly; 22/22 pytest tests green; PROGRESS.md updated
 
 ---
+
 
 ## Phase 5 — Multimodal Fusion + Explainability
 

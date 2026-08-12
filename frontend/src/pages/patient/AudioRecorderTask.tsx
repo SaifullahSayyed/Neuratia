@@ -93,7 +93,7 @@ export const AudioRecorderTask: React.FC<AudioRecorderTaskProps> = ({ sessionId 
       const fileName = `${user?.id || "guest"}/${sessionId}_${Date.now()}.webm`;
 
       // Upload directly to Supabase Storage object store (never local disk on server)
-      const { data: storageData, error: storageError } = await supabase.storage
+      const { error: storageError } = await supabase.storage
         .from("speech-recordings")
         .upload(fileName, audioBlob, { contentType: "audio/webm", upsert: true });
 
