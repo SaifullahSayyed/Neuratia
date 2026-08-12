@@ -22,13 +22,11 @@ def generate_synthetic_adress_features(n_samples: int = 100):
     for environment testing when real dataset is pending TalkBank DUA approval.
     """
     np.random.seed(42)
-    # Control group (0) vs Impaired group (1)
     y = np.random.choice([0, 1], size=n_samples, p=[0.5, 0.5])
 
-    # Features: [MFCC_1..13, Jitter, Shimmer, HNR, TTR, Silence_Ratio, Filler_Rate]
     X = []
     for label in y:
-        if label == 0:  # Healthy control
+        if label == 0:
             mfccs = np.random.normal(0.0, 1.0, 13)
             jitter = np.random.uniform(0.005, 0.015)
             shimmer = np.random.uniform(0.02, 0.05)
@@ -36,7 +34,7 @@ def generate_synthetic_adress_features(n_samples: int = 100):
             ttr = np.random.uniform(0.55, 0.75)
             silence_ratio = np.random.uniform(0.10, 0.25)
             filler_rate = np.random.uniform(0.01, 0.04)
-        else:  # Cognitive decline
+        else:
             mfccs = np.random.normal(-0.5, 1.2, 13)
             jitter = np.random.uniform(0.018, 0.035)
             shimmer = np.random.uniform(0.06, 0.12)
@@ -59,10 +57,8 @@ def main():
 
     print("=== Neuratia Speech Classifier Training ===")
 
-    # Check if custom dataset directory exists, else fallback to synthetic distribution matching ADReSS
     if os.path.exists(args.data_dir) and len(os.listdir(args.data_dir)) > 0:
         print(f"Loading ADReSS dataset features from {args.data_dir}...")
-        # Custom loading logic for ADReSS CSV/WAV files
         X, y = generate_synthetic_adress_features(150)
     else:
         print("Dataset directory empty or missing. Using ADReSS-normed feature distribution for calibration...")

@@ -1,20 +1,7 @@
-/**
- * Normed Cognitive Scoring Lookup & Normalization Logic
- *
- * References:
- * 1. Monaco et al. (2013) - "Normative data for the Digit Span and Corsi Block-Tapping Test in an Italian adult population"
- *    Neurological Sciences, 34(4), 485-491.
- * 2. Wechsler Adult Intelligence Scale - Fourth Edition (WAIS-IV) (2008) Digit Span Age & Education Norms.
- * 3. Nasreddine et al. (2005) - MoCA Demographic Correction Rules (+1 point if <= 12 years education).
- */
 
 export type AgeBand = "18-39" | "40-59" | "60-74" | "75+";
 export type EducationBand = "primary" | "secondary" | "undergraduate" | "postgraduate";
 
-/**
- * Expected baseline digit span capacity by Age & Education band.
- * Based on WAIS-IV & Monaco et al. 2013 normative averages.
- */
 const DIGIT_SPAN_EXPECTED_BASELINES: Record<AgeBand, Record<EducationBand, number>> = {
   "18-39": {
     primary: 5.5,
@@ -58,12 +45,6 @@ export function getEducationBand(edu?: string): EducationBand {
   return "secondary";
 }
 
-/**
- * Computes normed sub-score (0.0 to 1.0) for Digit Span performance.
- * @param maxSpanAchieved The highest digit span sequence recalled correctly
- * @param age User age in years
- * @param education Education level string
- */
 export function calculateNormedDigitSpanScore(
   maxSpanAchieved: number,
   age?: number,
@@ -73,9 +54,6 @@ export function calculateNormedDigitSpanScore(
   const education_band = getEducationBand(education);
   const expected_baseline = DIGIT_SPAN_EXPECTED_BASELINES[age_band][education_band];
 
-  // Ratio of achieved span relative to expected baseline
-  // Span ratio of 1.0 = meets age/edu baseline (sub-score ~0.85)
-  // Span ratio < 0.7 = potential impairment indicator (sub-score < 0.5)
   const spanRatio = maxSpanAchieved / expected_baseline;
   const sub_score = Math.min(1.0, Math.max(0.1, Math.round(spanRatio * 0.85 * 100) / 100));
 

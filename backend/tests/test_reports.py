@@ -44,7 +44,6 @@ PARTIAL_FUSION = {
 }
 
 
-# ── RAG Retriever tests ────────────────────────────────────────────────────────
 
 def test_rag_retriever_returns_chunks():
     retriever = RAGRetriever()
@@ -67,7 +66,6 @@ def test_rag_retriever_top_k_respected():
         assert len(retriever.retrieve("test", top_k=k)) <= k
 
 
-# ── Report Generator tests ─────────────────────────────────────────────────────
 
 def test_template_report_contains_disclaimer():
     """Non-diagnostic disclaimer must be present in every report."""
@@ -101,7 +99,6 @@ def test_generate_report_falls_back_to_template():
     assert len(result["rag_chunks_used"]) > 0
 
 
-# ── API Route tests ────────────────────────────────────────────────────────────
 
 def test_generate_report_unauthenticated():
     res = client.post(

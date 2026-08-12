@@ -34,7 +34,6 @@ def create_test_token(role: str = "patient") -> str:
     return jwt.encode(payload, SECRET, algorithm="HS256")
 
 
-# ── Security Headers ───────────────────────────────────────────────────────────
 
 def test_security_header_x_content_type_options():
     res = client.get("/api/health")
@@ -70,7 +69,6 @@ def test_no_hsts_in_dev():
     assert "strict-transport-security" not in res.headers
 
 
-# ── Rate Limiter Unit Tests ────────────────────────────────────────────────────
 
 def test_rate_limiter_store_allows_under_limit():
     store = _InMemoryStore()
@@ -94,7 +92,6 @@ def test_route_limits_defined_for_sensitive_routes():
     assert audio_limit < default_limit
 
 
-# ── Input Validation / 422 Hardening ──────────────────────────────────────────
 
 def test_start_session_age_out_of_range():
     """Age must be 18–120. Age=200 should return 422."""
@@ -155,7 +152,6 @@ def test_gaze_calibration_quality_negative():
     assert res.status_code == 422
 
 
-# ── Auth Enforcement ───────────────────────────────────────────────────────────
 
 @pytest.mark.parametrize("route", [
     ("/api/sessions/start", "POST"),
@@ -173,7 +169,6 @@ def test_all_protected_routes_require_auth(route):
     assert res.status_code == 401, f"{path} should require auth but returned {res.status_code}"
 
 
-# ── SQL Injection Safety ───────────────────────────────────────────────────────
 
 def test_sql_injection_in_session_id_does_not_crash():
     """
@@ -187,13 +182,11 @@ def test_sql_injection_in_session_id_does_not_crash():
         json={"session_id": malicious, "speech_score": 0.5},
         headers={"Authorization": f"Bearer {token}"},
     )
-    # Should safely complete or validate, never crash with unhandled DB exception
     assert res.status_code == 200
     assert res.json()["status"] == "success"
 
 
 
-# ── Environment Variable Completeness ─────────────────────────────────────────
 
 def test_required_env_vars_are_set():
     """

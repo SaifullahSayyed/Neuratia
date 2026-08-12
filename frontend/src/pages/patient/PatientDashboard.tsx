@@ -19,7 +19,6 @@ export const PatientDashboard: React.FC = () => {
     age: 60,
     education: "secondary",
   });
-  // Track per-modality sub-scores for fusion
   const [speechScore, setSpeechScore] = useState<number | undefined>(undefined);
   const [gazeScore, setGazeScore] = useState<number | undefined>(undefined);
   const [cognitiveScore, setCognitiveScore] = useState<number | undefined>(undefined);

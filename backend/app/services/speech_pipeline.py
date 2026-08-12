@@ -24,7 +24,6 @@ class SpeechPipeline:
         self.model = None
         self.model_version = "demo_untrained"
 
-        # Load versioned model artifact if available
         if os.path.exists(MODEL_PATH):
             try:
                 import joblib
@@ -40,21 +39,16 @@ class SpeechPipeline:
         """
         Executes STT -> Acoustic Extraction -> Linguistic Extraction -> Model Prediction.
         """
-        # 1. Transcribe audio
         stt_result = await self.stt_service.transcribe(audio_bytes, filename)
         transcript = stt_result.get("text", "")
         segments = stt_result.get("segments", [])
 
-        # 2. Extract Acoustic Features
         acoustic_features = self.acoustic_extractor.extract_features(audio_bytes)
 
-        # 3. Extract Linguistic Features
         linguistic_features = self.linguistic_extractor.extract_features(transcript, segments)
 
-        # 4. Predict or calculate Sub-Score
         if self.model is not None:
             try:
-                # Construct feature vector matching train_speech_pipeline.py
                 mfcc_means = acoustic_features.get("mfcc_means", [0.0] * 13)
                 jitter = acoustic_features.get("jitter_local", 0.012)
                 shimmer = acoustic_features.get("shimmer_local", 0.045)
@@ -77,7 +71,6 @@ class SpeechPipeline:
                 sub_score = self._calculate_rule_subscore(acoustic_features, linguistic_features)
                 is_demo_mode = True
         else:
-            # Honest demo mode fallback when model artifact is missing
             sub_score = self._calculate_rule_subscore(acoustic_features, linguistic_features)
             is_demo_mode = True
 
@@ -99,7 +92,6 @@ class SpeechPipeline:
         jitter = acoustic.get("jitter_local", 0.012)
         shimmer = acoustic.get("shimmer_local", 0.045)
 
-        # Baseline scoring
         base = 0.85
         if ttr < 0.45:
             base -= 0.20

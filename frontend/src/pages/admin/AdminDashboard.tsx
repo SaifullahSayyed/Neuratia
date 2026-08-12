@@ -29,7 +29,6 @@ export const AdminDashboard: React.FC = () => {
         setLinks(data.pending_links || []);
       }
     } catch {
-      // Ignore
     } finally {
       setLoading(false);
     }
@@ -39,7 +38,6 @@ export const AdminDashboard: React.FC = () => {
     if (token) {
       fetchPendingLinks();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const handleApprove = async (doctorId: string, patientId: string, approve: boolean) => {

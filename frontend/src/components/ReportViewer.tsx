@@ -16,7 +16,6 @@ interface ReportResult {
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-/** Renders markdown-ish text: bold, headers, bullets — no external library needed. */
 function renderReportText(text: string): React.ReactNode {
   return text.split("\n").map((line, i) => {
     if (line.startsWith("## ")) {
@@ -53,7 +52,6 @@ function renderReportText(text: string): React.ReactNode {
     if (line.trim() === "") {
       return <div key={i} className="h-1.5" />;
     }
-    // Inline bold: **text**
     const parts = line.split(/(\*\*[^*]+\*\*)/g);
     return (
       <p key={i} className="text-xs text-slate-300 leading-relaxed">

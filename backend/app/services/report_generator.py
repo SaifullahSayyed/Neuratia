@@ -177,11 +177,9 @@ def _template_report(
 
 ---
 
-## Neuratia Multimodal Screening Summary
 **Composite Risk Score:** {pct}% — {risk_label}
 **Report Mode:** Template (Demo — Gemini API key not configured)
 
-### Executive Summary
 This research prototype screening session produced a composite oculomotor, speech, and
 cognitive risk score of **{pct}%**, classified as **{risk_band.upper()} RISK SIGNAL**.
 This result {
@@ -192,14 +190,11 @@ This result {
     "is within the expected range; routine monitoring is recommended."
 }
 
-### Modality Findings
 {chr(10).join(modality_lines)}{missing_note}
 
-### Evidence Context
 {'; '.join(c['topic'] for c in rag_chunks)} — evidence retrieved from the Neuratia
 reference corpus (Fraser 2016, Luz 2021, Antoniades 2013, Holmqvist 2011, Monaco 2013).
 
-### Next Steps
 - **Share this report with a qualified neurologist or geriatric psychiatrist.**
 - A formal neuropsychological assessment (MoCA, MMSE, or full WAIS-IV battery) is recommended.
 - Review current medications, sleep quality, and mood — all can temporarily affect screening scores.

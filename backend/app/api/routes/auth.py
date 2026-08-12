@@ -43,7 +43,6 @@ async def list_pending_links(admin: AuthUser = Depends(require_role(["admin"])))
         )
         return {"pending_links": res.data}
     except Exception as e:
-        # Graceful handling when Supabase isn't reachable in dev
         return {"pending_links": [], "note": f"Supabase query skipped or errored: {e!s}"}
 
 

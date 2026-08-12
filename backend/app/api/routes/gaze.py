@@ -31,7 +31,6 @@ async def process_gaze(
     try:
         result = pipeline.process_gaze(req.calibration_quality, req.fixation_features)
 
-        # Persist to Supabase DB gaze_results table
         try:
             from supabase import create_client
 

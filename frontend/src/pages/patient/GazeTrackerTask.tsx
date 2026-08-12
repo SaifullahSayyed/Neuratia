@@ -28,7 +28,7 @@ export const GazeTrackerTask: React.FC<GazeTrackerTaskProps> = ({ sessionId, onC
 
   const [step, setStep] = useState<"init" | "calibrate" | "fixation" | "pursuit" | "antisaccade" | "complete">("init");
   const [calibPointIdx, setCalibPointIdx] = useState(0);
-  const [calibError, setCalibError] = useState(4.2); // residual error in px
+  const [calibError, setCalibError] = useState(4.2);
   const [statusMsg, setStatusMsg] = useState("Initializing browser MediaPipe Face Landmarker WASM...");
   const [submitting, setSubmitting] = useState(false);
   const [gazeResult, setGazeResult] = useState<GazePipelineResult | null>(null);

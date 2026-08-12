@@ -24,7 +24,6 @@ def create_test_token() -> str:
     return jwt.encode(payload, SECRET, algorithm="HS256")
 
 
-# ── Service-level tests ────────────────────────────────────────────────────────
 
 def test_fuse_all_modalities_present():
     """All three modalities present → weighted composite equals expected value."""
@@ -77,7 +76,6 @@ def test_fuse_citations_present():
     assert len(result["citations"]) >= 1
 
 
-# ── API route tests ────────────────────────────────────────────────────────────
 
 def test_fuse_endpoint_unauthenticated():
     res = client.post(

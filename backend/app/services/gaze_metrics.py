@@ -19,12 +19,11 @@ Scientific References & Citations:
 import math
 from typing import Any
 
-# Literature-cited thresholds (Antoniades 2013, Holmqvist 2011, Opwononi 2023)
 CITED_THRESHOLDS = {
-    "max_acceptable_calibration_error_px": 10.0,   # Holmqvist 2011
-    "baseline_fixation_dispersion_px": 15.0,       # Holmqvist 2011
-    "baseline_saccade_latency_ms": 250.0,          # Opwononi 2023
-    "baseline_antisaccade_error_rate": 0.30,       # Antoniades 2013
+    "max_acceptable_calibration_error_px": 10.0,
+    "baseline_fixation_dispersion_px": 15.0,
+    "baseline_saccade_latency_ms": 250.0,
+    "baseline_antisaccade_error_rate": 0.30,
 }
 
 
@@ -48,7 +47,6 @@ class GazeMetricExtractor:
                     for x, y in zip(xs, ys, strict=False)
                 ) / len(xs)
                 dispersion_norm = math.sqrt(variance)
-                # Scale normalized coords (0-1) to px (~1000px screen)
                 dispersion_px = round(dispersion_norm * 1000, 2)
             else:
                 dispersion_px = float(

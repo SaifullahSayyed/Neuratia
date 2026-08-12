@@ -32,7 +32,6 @@ References:
 
 from __future__ import annotations
 
-# Base weights derived from literature (Fraser 2016, Luz 2021, Opwononi 2023)
 BASE_WEIGHTS: dict[str, float] = {
     "speech": 0.40,
     "gaze": 0.35,
@@ -103,13 +102,13 @@ def fuse_scores(
     effective_weights = _redistribute_weights(BASE_WEIGHTS, present)
 
     composite = sum(
-        modality_map[k] * w  # type: ignore[operator]
+        modality_map[k] * w
         for k, w in effective_weights.items()
     )
     composite = round(min(1.0, max(0.0, composite)), 4)
 
     contributions = {
-        k: round(modality_map[k] * w, 4)  # type: ignore[operator]
+        k: round(modality_map[k] * w, 4)
         for k, w in effective_weights.items()
     }
 

@@ -16,7 +16,6 @@ from pathlib import Path
 
 CORPUS_PATH = Path(__file__).parents[4] / "docs" / "reference-corpus" / "corpus.md"
 
-# Fallback inline corpus if file is not found (e.g. in unit tests)
 FALLBACK_CHUNKS = [
     (
         "Speech biomarkers",

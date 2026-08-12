@@ -41,7 +41,6 @@ class GazePipeline:
         """Processes gaze payload, applies calibration gating, returns score."""
         metrics = self.extractor.extract_metrics(fixation_features)
 
-        # Calibration Quality Gating (Holmqvist 2011)
         max_calib_limit = CITED_THRESHOLDS["max_acceptable_calibration_error_px"]
         is_low_confidence = calibration_quality > max_calib_limit
 

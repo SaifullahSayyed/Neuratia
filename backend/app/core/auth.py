@@ -24,7 +24,6 @@ class AuthUser(BaseModel):
 def verify_jwt_token(token: str) -> dict:
     """Verifies a Supabase JWT token against the configured secret or HS256 algorithm."""
     try:
-        # Supabase uses HS256 with the SUPABASE_JWT_SECRET
         payload = jwt.decode(
             token,
             settings.supabase_jwt_secret,
@@ -61,7 +60,6 @@ async def get_current_user(
             detail="Token payload missing subject ('sub')",
         )
 
-    # Extract role from user_metadata or app_metadata if present
     user_metadata = payload.get("user_metadata", {})
     app_metadata = payload.get("app_metadata", {})
     role = user_metadata.get("role") or app_metadata.get("role") or "patient"

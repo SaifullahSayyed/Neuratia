@@ -47,7 +47,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setProfile(data as UserProfile);
       }
     } catch {
-      // Ignore in mock environment
     }
   };
 

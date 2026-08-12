@@ -30,7 +30,6 @@ class STTService:
                 from groq import Groq
 
                 client = Groq(api_key=self.groq_api_key)
-                # Call Groq Whisper transcript endpoint
                 transcription = client.audio.transcriptions.create(
                     file=(filename, audio_bytes),
                     model="whisper-large-v3-turbo",
@@ -46,7 +45,6 @@ class STTService:
             except Exception as e:
                 print(f"[STTService] Groq API notice: {e!s}. Falling back to dev mock STT.")
 
-        # Fallback for dev / unconfigured API keys
         mock_text = (
             "The family is having a park picnic near the green trees. "
             "A dog is resting near the red blanket, and a child is flying a blue kite."

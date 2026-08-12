@@ -40,7 +40,7 @@ def test_gaze_metric_extractor_thresholds():
 def test_gaze_pipeline_good_calibration():
     pipeline = GazePipeline()
     res = pipeline.process_gaze(
-        calibration_quality=4.2,  # < 10.0px -> High confidence
+        calibration_quality=4.2,
         fixation_features={"fixation_dispersion_px": 11.0, "saccade_latency_ms": 200, "antisaccade_error_rate": 0.10},
     )
     assert res["is_low_confidence"] is False
@@ -52,7 +52,7 @@ def test_gaze_pipeline_calibration_gating_flag():
     """Calibration residual error > 10.0px MUST flag is_low_confidence = True (Holmqvist 2011)."""
     pipeline = GazePipeline()
     res = pipeline.process_gaze(
-        calibration_quality=14.5,  # > 10.0px -> Low confidence flag
+        calibration_quality=14.5,
         fixation_features={"fixation_dispersion_px": 11.0, "saccade_latency_ms": 200, "antisaccade_error_rate": 0.10},
     )
     assert res["is_low_confidence"] is True

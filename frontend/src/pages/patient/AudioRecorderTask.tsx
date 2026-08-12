@@ -93,7 +93,6 @@ export const AudioRecorderTask: React.FC<AudioRecorderTaskProps> = ({ sessionId,
     try {
       const fileName = `${user?.id || "guest"}/${sessionId}_${Date.now()}.webm`;
 
-      // Upload directly to Supabase Storage object store (never local disk on server)
       const { error: storageError } = await supabase.storage
         .from("speech-recordings")
         .upload(fileName, audioBlob, { contentType: "audio/webm", upsert: true });
@@ -102,7 +101,6 @@ export const AudioRecorderTask: React.FC<AudioRecorderTaskProps> = ({ sessionId,
         console.warn("[SpeechUpload] Storage upload notice:", storageError.message);
       }
 
-      // Execute Speech AI processing pipeline on backend
       const formData = new FormData();
       formData.append("session_id", sessionId);
       formData.append("file", audioBlob, "speech.webm");
@@ -121,7 +119,6 @@ export const AudioRecorderTask: React.FC<AudioRecorderTaskProps> = ({ sessionId,
         setStatusMsg("Speech pipeline analysis completed!");
         onComplete?.(data.result?.sub_score ?? 0.5);
       } else {
-        // Fallback demo result for dev testing
         setPipelineResult({
           transcript:
             "The family is enjoying a park picnic near green trees. A dog rests by the blanket while a child flies a blue kite.",

@@ -14,18 +14,14 @@ class AcousticFeatureExtractor:
             import librosa
             import numpy as np
 
-            # Load audio using librosa & io.BytesIO
             y, sr = librosa.load(io.BytesIO(audio_bytes), sr=16000)
 
-            # MFCCs (13 coefficients)
             mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
             mfcc_means = np.mean(mfccs, axis=1).tolist()
 
-            # Spectral metrics
             spec_cent = float(np.mean(librosa.feature.spectral_centroid(y=y, sr=sr)))
             zcr = float(np.mean(librosa.feature.zero_crossing_rate(y=y)))
 
-            # Jitter, Shimmer, HNR via parselmouth if available
             jitter = 0.012
             shimmer = 0.045
             hnr = 21.4
@@ -57,7 +53,6 @@ class AcousticFeatureExtractor:
             }
 
         except Exception as e:
-            # Fallback feature dictionary for synthetic / mock audio buffers in tests
             return {
                 "mfcc_means": [0.1] * 13,
                 "spectral_centroid": 1450.2,

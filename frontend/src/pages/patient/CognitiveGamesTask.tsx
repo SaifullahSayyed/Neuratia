@@ -43,7 +43,6 @@ export const CognitiveGamesTask: React.FC<CognitiveGamesTaskProps> = ({
     setUserInput("");
     setGamePhase("showing");
 
-    // Hide sequence after presentation time (1s per digit)
     setTimeout(() => {
       setGamePhase("input");
     }, level * 1000 + 500);
@@ -59,13 +58,11 @@ export const CognitiveGamesTask: React.FC<CognitiveGamesTaskProps> = ({
     e.preventDefault();
     const correctString = digits.join("");
     if (userInput.trim() === correctString) {
-      // Success! Level up
       const nextLvl = currentLevel + 1;
       setMaxSpan(currentLevel);
       setCurrentLevel(nextLvl);
       startNextRound(nextLvl);
     } else {
-      // Game Over — submit normed score
       finishGame(maxSpan);
     }
   };
@@ -93,7 +90,6 @@ export const CognitiveGamesTask: React.FC<CognitiveGamesTaskProps> = ({
         }),
       });
     } catch {
-      // Continue locally
     } finally {
       setSubmitting(false);
       onComplete?.(normed.sub_score);

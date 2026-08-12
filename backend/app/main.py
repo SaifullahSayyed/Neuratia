@@ -27,18 +27,15 @@ app = FastAPI(
     redoc_url="/redoc" if not settings.is_production else None,
 )
 
-# CORS — open in dev, Vercel-restricted in production
 origins = (
     ["*"]
     if settings.environment in ("dev", "test")
     else [
         "https://cognidetect.vercel.app",
         "https://neuratia.vercel.app",
-        # Add custom domain once configured
     ]
 )
 
-# Middleware stack (outermost first — applied inside-out to requests)
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(SecurityHeadersMiddleware, is_production=settings.is_production)
 app.add_middleware(

@@ -23,7 +23,7 @@ class StartSessionRequest(BaseModel):
 
 class CognitiveResultSubmission(BaseModel):
     session_id: str = Field(max_length=64)
-    game_type: str = Field(max_length=32)  # 'digit_span' | 'sequence_memory'
+    game_type: str = Field(max_length=32)
     raw_events: list[dict[str, Any]] | dict[str, Any]
     age_band: str = Field(max_length=32)
     education_band: str = Field(max_length=32)
@@ -75,7 +75,6 @@ async def start_session(
         session_data = res.data[0] if res.data else {"id": "mock-session-id", "patient_id": user.id}
         return {"status": "success", "session": session_data}
     except Exception as e:
-        # Fallback response for dev environment testing without live Supabase DB
         return {
             "status": "success",
             "session": {

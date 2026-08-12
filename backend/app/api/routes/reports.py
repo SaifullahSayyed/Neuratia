@@ -48,7 +48,6 @@ async def generate_session_report(
     try:
         result = generate_report(req.fusion_result)
 
-        # Persist report text to fused_reports table (non-fatal)
         try:
             from supabase import create_client
 

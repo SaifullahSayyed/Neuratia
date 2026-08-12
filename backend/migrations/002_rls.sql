@@ -1,7 +1,4 @@
--- 002_rls.sql
--- Postgres Row Level Security Policies for Neuratia / CogniDetect
 
--- Enable RLS on all tables
 ALTER TABLE public.profiles              ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.assessment_sessions   ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.speech_results        ENABLE ROW LEVEL SECURITY;
@@ -10,7 +7,6 @@ ALTER TABLE public.cognitive_game_results ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.fused_reports         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.doctor_patient_links  ENABLE ROW LEVEL SECURITY;
 
--- ── profiles ──────────────────────────────────────────────────────────────────
 DROP POLICY IF EXISTS "own_profile" ON public.profiles;
 CREATE POLICY "own_profile" ON public.profiles
   FOR ALL USING (auth.uid() = id);
@@ -21,7 +17,6 @@ CREATE POLICY "admin_read_all_profiles" ON public.profiles
     EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
   );
 
--- ── assessment_sessions ───────────────────────────────────────────────────────
 DROP POLICY IF EXISTS "patient_own_sessions" ON public.assessment_sessions;
 CREATE POLICY "patient_own_sessions" ON public.assessment_sessions
   FOR ALL USING (patient_id = auth.uid());
@@ -37,7 +32,6 @@ CREATE POLICY "doctor_linked_sessions" ON public.assessment_sessions
     )
   );
 
--- ── speech_results ────────────────────────────────────────────────────────────
 DROP POLICY IF EXISTS "speech_results_access" ON public.speech_results;
 CREATE POLICY "speech_results_access" ON public.speech_results
   FOR ALL USING (
@@ -56,7 +50,6 @@ CREATE POLICY "speech_results_access" ON public.speech_results
     )
   );
 
--- ── gaze_results ──────────────────────────────────────────────────────────────
 DROP POLICY IF EXISTS "gaze_results_access" ON public.gaze_results;
 CREATE POLICY "gaze_results_access" ON public.gaze_results
   FOR ALL USING (
@@ -75,7 +68,6 @@ CREATE POLICY "gaze_results_access" ON public.gaze_results
     )
   );
 
--- ── cognitive_game_results ────────────────────────────────────────────────────
 DROP POLICY IF EXISTS "cognitive_game_results_access" ON public.cognitive_game_results;
 CREATE POLICY "cognitive_game_results_access" ON public.cognitive_game_results
   FOR ALL USING (
@@ -94,7 +86,6 @@ CREATE POLICY "cognitive_game_results_access" ON public.cognitive_game_results
     )
   );
 
--- ── fused_reports ─────────────────────────────────────────────────────────────
 DROP POLICY IF EXISTS "fused_reports_access" ON public.fused_reports;
 CREATE POLICY "fused_reports_access" ON public.fused_reports
   FOR ALL USING (
@@ -113,7 +104,6 @@ CREATE POLICY "fused_reports_access" ON public.fused_reports
     )
   );
 
--- ── doctor_patient_links ──────────────────────────────────────────────────────
 DROP POLICY IF EXISTS "admin_manage_links" ON public.doctor_patient_links;
 CREATE POLICY "admin_manage_links" ON public.doctor_patient_links
   FOR ALL USING (

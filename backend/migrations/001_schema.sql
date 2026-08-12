@@ -1,7 +1,4 @@
--- 001_schema.sql
--- Neuratia / CogniDetect Postgres Schema
 
--- 1. profiles — extends auth.users
 CREATE TABLE IF NOT EXISTS public.profiles (
   id            UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   full_name     TEXT NOT NULL,
@@ -11,7 +8,6 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   created_at    TIMESTAMPTZ DEFAULT now()
 );
 
--- 2. assessment_sessions
 CREATE TABLE IF NOT EXISTS public.assessment_sessions (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   patient_id   UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
@@ -19,7 +15,6 @@ CREATE TABLE IF NOT EXISTS public.assessment_sessions (
   status       TEXT NOT NULL DEFAULT 'in_progress' CHECK (status IN ('in_progress','complete','error'))
 );
 
--- 3. speech_results
 CREATE TABLE IF NOT EXISTS public.speech_results (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   session_id      UUID NOT NULL REFERENCES public.assessment_sessions(id) ON DELETE CASCADE,
@@ -32,7 +27,6 @@ CREATE TABLE IF NOT EXISTS public.speech_results (
   created_at      TIMESTAMPTZ DEFAULT now()
 );
 
--- 4. gaze_results
 CREATE TABLE IF NOT EXISTS public.gaze_results (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   session_id      UUID NOT NULL REFERENCES public.assessment_sessions(id) ON DELETE CASCADE,
@@ -43,7 +37,6 @@ CREATE TABLE IF NOT EXISTS public.gaze_results (
   created_at      TIMESTAMPTZ DEFAULT now()
 );
 
--- 5. cognitive_game_results
 CREATE TABLE IF NOT EXISTS public.cognitive_game_results (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   session_id      UUID NOT NULL REFERENCES public.assessment_sessions(id) ON DELETE CASCADE,
@@ -55,7 +48,6 @@ CREATE TABLE IF NOT EXISTS public.cognitive_game_results (
   created_at      TIMESTAMPTZ DEFAULT now()
 );
 
--- 6. fused_reports
 CREATE TABLE IF NOT EXISTS public.fused_reports (
   id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   session_id        UUID NOT NULL REFERENCES public.assessment_sessions(id) ON DELETE CASCADE,
@@ -66,7 +58,6 @@ CREATE TABLE IF NOT EXISTS public.fused_reports (
   created_at        TIMESTAMPTZ DEFAULT now()
 );
 
--- 7. doctor_patient_links
 CREATE TABLE IF NOT EXISTS public.doctor_patient_links (
   doctor_id        UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
   patient_id       UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,

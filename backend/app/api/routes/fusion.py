@@ -44,7 +44,6 @@ async def fuse_session(
 
     result = fuse_scores(req.speech_score, req.gaze_score, req.cognitive_score)
 
-    # Persist to Supabase fused_reports table
     try:
         from supabase import create_client
 
@@ -58,7 +57,6 @@ async def fuse_session(
             "model_version": "fusion_literature_v1",
         }).execute()
     except Exception as dbe:
-        # Non-fatal: DB persistence failure must not block score return
         print(f"[FusionRoute] Supabase DB write notice: {dbe!s}")
 
     return {"status": "success", "session_id": req.session_id, "result": result}

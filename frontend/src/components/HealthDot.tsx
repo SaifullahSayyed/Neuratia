@@ -11,7 +11,6 @@ export function HealthDot() {
     let cancelled = false;
 
     const poll = async () => {
-      // First attempt — show "checking"
       const ok = await checkHealth();
       if (cancelled) return;
 
@@ -20,11 +19,9 @@ export function HealthDot() {
         return;
       }
 
-      // First miss — Render may be cold-starting (can take up to 60s)
       setStatus("waking");
       setAttempt(1);
 
-      // Retry every 5s for up to 75s (15 attempts)
       for (let i = 1; i <= 15; i++) {
         await new Promise((r) => setTimeout(r, 5000));
         if (cancelled) return;
@@ -38,7 +35,6 @@ export function HealthDot() {
         setAttempt(i + 1);
       }
 
-      // Exhausted retries
       setStatus("offline");
     };
 

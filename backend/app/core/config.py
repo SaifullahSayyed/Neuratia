@@ -10,19 +10,15 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
-    # Supabase
     supabase_url: str
     supabase_anon_key: str
     supabase_service_role_key: str
     supabase_jwt_secret: str = "placeholder-jwt-secret"
 
-    # LLM providers
     groq_api_key: str
-    # Gemini is optional in dev — required only when llm_provider="gemini"
     gemini_api_key: str = ""
     llm_provider: str = "groq"
 
-    # Runtime
     environment: str = "dev"
 
     @property

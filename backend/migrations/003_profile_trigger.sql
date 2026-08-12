@@ -1,5 +1,3 @@
--- 003_profile_trigger.sql
--- Auto-creates a profile row when a new user signs up in auth.users
 
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$

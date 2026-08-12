@@ -36,7 +36,6 @@ async def process_speech_file(
 
         result = await pipeline.process_audio(audio_bytes, filename=file.filename or "speech.webm")
 
-        # Persist to Supabase DB speech_results table
         try:
             from supabase import create_client
 

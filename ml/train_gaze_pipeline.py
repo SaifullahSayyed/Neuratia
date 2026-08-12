@@ -16,7 +16,6 @@ class SimpleLinearClassifier:
     """Lightweight fallback classifier for local testing without scikit-learn C++ wheels."""
 
     def __init__(self):
-        # Weights for [dispersion, latency, antisaccade_err]
         self.weights = np.array([0.05, 0.008, 2.5])
         self.bias = -2.1
 
@@ -42,11 +41,11 @@ def generate_synthetic_gaze_distribution(n_samples: int = 120):
 
     X = []
     for label in y:
-        if label == 0:  # Healthy control
+        if label == 0:
             dispersion = np.random.uniform(5.0, 14.0)
             latency = np.random.uniform(180.0, 240.0)
             antisaccade_err = np.random.uniform(0.05, 0.25)
-        else:  # Cognitive decline / MCI
+        else:
             dispersion = np.random.uniform(16.0, 32.0)
             latency = np.random.uniform(255.0, 360.0)
             antisaccade_err = np.random.uniform(0.32, 0.65)
