@@ -93,9 +93,42 @@
 
 ---
 
-## Phase 2 — Frontend Capture UI
+## Phase 2 — Frontend Capture UI (Games, Recorder, Client-Side Gaze)
 
-**Status:** 🔲 Not started
+**Date:** 2026-08-12
+**Status:** ✅ Complete
+
+### What was built
+
+- **Cognitive Mini-Games (`frontend/src/pages/patient/CognitiveGamesTask.tsx` & `lib/normedScoring.ts`)**:
+  - Interactive digit span memory task
+  - Age & education demographic normed scoring lookup algorithm (`calculateNormedDigitSpanScore`) citing WAIS-IV & Monaco et al. (2013) norms
+  - Submits normed sub-score and raw event payload to `/api/sessions/cognitive`
+- **Speech Audio Capture (`frontend/src/pages/patient/AudioRecorderTask.tsx`)**:
+  - Browser `MediaRecorder` API capturing spontaneous speech description
+  - Original SVG illustration prompt ("The Park Picnic Scene")
+  - Uploads audio blobs directly to Supabase Storage `speech-recordings` bucket (never local server disk)
+  - Submits storage reference path to `/api/sessions/speech`
+- **Eye & Gaze Tracking (`frontend/src/pages/patient/GazeTrackerTask.tsx`)**:
+  - Built using `@mediapipe/tasks-vision` (Face Landmarker WASM running 100% in-browser)
+  - 9-point calibration grid calculating pixel residual error
+  - Fixation stability, smooth pursuit, and **antisaccade tasks** (looking away from flashed cue)
+  - Extracted numeric gaze logs (coordinates, timestamps, latency) posted to `/api/sessions/gaze` — **0% server OpenCV (`cv2.VideoCapture` / `cv2.imshow` banned)**
+- **Consent & Demographics (`frontend/src/components/ConsentModal.tsx` & `backend/migrations/004_consent_and_storage.sql`)**:
+  - Non-diagnostic disclaimer and DPDP Act 2023 disclosure modal
+  - Consent flag, session age, and education level saved to `assessment_sessions` table
+- **Backend Sessions API (`backend/app/api/routes/sessions.py` & `tests/test_sessions.py`)**:
+  - `/api/sessions/start`, `/api/sessions/cognitive`, `/api/sessions/speech`, `/api/sessions/gaze`, `/api/sessions/my-sessions`
+  - Unit tests verifying JWT requirement, consent enforcement, and numeric gaze logging
+
+### Definition of Done — Phase 2
+
+- [x] Digit span game works in browser with age/education normed score calculations
+- [x] MediaRecorder captures speech and uploads directly to Supabase Storage
+- [x] MediaPipe WASM gaze tracker runs 100% in-browser with 9-point calibration, pursuit, and antisaccade tasks
+- [x] Extracted numeric gaze features posted to backend; zero server OpenCV code
+- [x] Consent state saved per session in database
+- [x] All linters (oxlint, tsc, ruff) and pytest test suites pass cleanly; `PROGRESS.md` updated
 
 ---
 
