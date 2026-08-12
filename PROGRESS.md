@@ -391,4 +391,51 @@
 
 ## Phase 8 — Free Deployment & NEC Demo Polish
 
-**Status:** 🔲 Not started
+**Date:** 2026-08-12
+**Status:** ✅ Complete
+
+### What was built
+
+- **Render Infrastructure as Code Blueprint (`render.yaml`)**:
+  - Defines `neuratia-backend` Python web service on Oregon free plan
+  - Configures build command `cd backend && pip install -r requirements.txt` and start command `uvicorn app.main:app`
+  - Explicitly lists all 6 required env vars for zero secret leakage
+
+- **Vercel Single Page App Configuration (`frontend/vercel.json`)**:
+  - Rewrites all paths to `/index.html` for client-side React Router routing
+  - Specifies Vite framework preset and `dist` build directory
+
+- **Deployment Documentation (`DEPLOYMENT.md`)**:
+  - Complete zero-cost deployment walkthrough covering Supabase, Groq, Google AI Studio, Render, and Vercel
+  - Documents cold-start handling, bucket creation, SQL migration order, and environment variable mapping
+
+- **Full Project Completion**:
+  - All 9 phases (Phase 0 through Phase 8) are 100% complete
+  - 64 backend pytest tests passing
+  - Zero linter/type errors on frontend or backend
+  - Git repository synchronized at `https://github.com/SaifullahSayyed/Neuratia.git`
+
+### Definition of Done — Phase 8
+
+- [x] `render.yaml` created and valid
+- [x] `frontend/vercel.json` created and valid
+- [x] `DEPLOYMENT.md` written with step-by-step free tier hosting guide
+- [x] 64/64 pytest tests passing; ruff, tsc, oxlint clean
+- [x] Git repository pushed and verified
+- [x] `PROGRESS.md` updated to 100% completion
+
+---
+
+## 🏆 Project Build Complete — Summary
+
+| Phase | Title | Status |
+|---|---|---|
+| Phase 0 | Scaffolding & Free-Tier Setup | ✅ Complete |
+| Phase 1 | Auth, Database Schema, RBAC | ✅ Complete |
+| Phase 2 | Frontend Capture UI (Games, Audio, WASM Gaze) | ✅ Complete |
+| Phase 3 | Speech AI Pipeline (Whisper, Librosa/Praat, TTR) | ✅ Complete |
+| Phase 4 | Gaze/Oculomotor Scoring & Calibration Gating | ✅ Complete |
+| Phase 5 | Multimodal Fusion + SHAP Explainability | ✅ Complete |
+| Phase 6 | LLM + TF-IDF RAG Reporting (Gemini 1.5 Flash) | ✅ Complete |
+| Phase 7 | Security Hardening, OWASP Headers, 64 Tests | ✅ Complete |
+| Phase 8 | Free Deployment & NEC Demo Polish | ✅ Complete |

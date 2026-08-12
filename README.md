@@ -96,14 +96,15 @@ cd frontend && npm install && npm run dev
 | Phase | Description | Status |
 |---|---|---|
 | 0 | Repo scaffolding, free-tier wiring, health-check round trip, CI | ✅ Complete |
-| 1 | Supabase Auth, DB schema, RLS, RBAC | 🔲 Next |
-| 2 | Capture UI — browser games, audio recorder, client-side gaze | 🔲 Pending |
-| 3 | Speech AI pipeline — Whisper + acoustic + DistilBERT | 🔲 Pending |
-| 4 | Gaze/oculomotor scoring backend | 🔲 Pending |
-| 5 | Multimodal fusion + explainability | 🔲 Pending |
-| 6 | LLM + RAG reporting layer | 🔲 Pending |
-| 7 | Security hardening, tests, compliance docs | 🔲 Pending |
-| 8 | Free deployment + NEC demo polish | 🔲 Pending |
+| 1 | Supabase Auth, DB schema, RLS, RBAC | ✅ Complete |
+| 2 | Capture UI — browser games, audio recorder, client-side gaze | ✅ Complete |
+| 3 | Speech AI pipeline — STT + acoustic librosa/praat + linguistic | ✅ Complete |
+| 4 | Gaze/oculomotor scoring backend & calibration gating | ✅ Complete |
+| 5 | Multimodal fusion + SHAP-style explainability | ✅ Complete |
+| 6 | LLM + TF-IDF RAG reporting layer (Gemini 1.5 Flash) | ✅ Complete |
+| 7 | Security hardening, OWASP headers, rate limiting, 64 tests | ✅ Complete |
+| 8 | Free deployment (Render + Vercel) + NEC demo polish | ✅ Complete |
+
 
 ---
 
