@@ -5,6 +5,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 interface GazeTrackerTaskProps {
   sessionId: string;
+  onComplete?: (score: number) => void;
 }
 
 interface GazePipelineResult {
@@ -21,7 +22,7 @@ interface GazePipelineResult {
   citations: string[];
 }
 
-export const GazeTrackerTask: React.FC<GazeTrackerTaskProps> = ({ sessionId }) => {
+export const GazeTrackerTask: React.FC<GazeTrackerTaskProps> = ({ sessionId, onComplete }) => {
   const { token } = useAuth();
   const navigate = useNavigate();
 
@@ -200,6 +201,7 @@ export const GazeTrackerTask: React.FC<GazeTrackerTaskProps> = ({ sessionId }) =
         const data = await res.json();
         setGazeResult(data.result);
         setStatusMsg("Gaze feature processing complete!");
+        onComplete?.(data.result?.sub_score ?? 0.5);
       } else {
         setGazeResult({
           metrics: { fixation_dispersion_px: 11.2, saccade_latency_ms: 205, antisaccade_error_rate: 0.18 },

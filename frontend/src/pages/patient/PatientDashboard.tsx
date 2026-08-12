@@ -5,6 +5,7 @@ import { ConsentModal } from "../../components/ConsentModal";
 import { CognitiveGamesTask } from "./CognitiveGamesTask";
 import { AudioRecorderTask } from "./AudioRecorderTask";
 import { GazeTrackerTask } from "./GazeTrackerTask";
+import { FusionReportPanel } from "../../components/FusionReportPanel";
 
 type ActiveView = "dashboard" | "cognitive" | "speech" | "gaze";
 
@@ -18,6 +19,10 @@ export const PatientDashboard: React.FC = () => {
     age: 60,
     education: "secondary",
   });
+  // Track per-modality sub-scores for fusion
+  const [speechScore, setSpeechScore] = useState<number | undefined>(undefined);
+  const [gazeScore, setGazeScore] = useState<number | undefined>(undefined);
+  const [cognitiveScore, setCognitiveScore] = useState<number | undefined>(undefined);
 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
@@ -120,14 +125,21 @@ export const PatientDashboard: React.FC = () => {
                   <div>
                     <strong>Active Session:</strong> {sessionId}
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-200">
-                    Consent Signed
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-200">
+                      Consent Signed
+                    </span>
+                    {(speechScore !== undefined || gazeScore !== undefined || cognitiveScore !== undefined) && (
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-violet-500/20 text-violet-200">
+                        {[speechScore, gazeScore, cognitiveScore].filter(s => s !== undefined).length}/3 Modalities Done
+                      </span>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="mt-3 p-3 rounded-xl bg-violet-500/10 border border-violet-500/20 text-xs text-violet-300 flex items-center justify-between">
                   <div>
-                    Click any task below to review informed consent & start your screening session.
+                    Click any task below to review informed consent &amp; start your screening session.
                   </div>
                 </div>
               )}
@@ -186,6 +198,16 @@ export const PatientDashboard: React.FC = () => {
                 </button>
               </div>
             </div>
+
+            {/* Fusion Report Panel — shown once session is active */}
+            {sessionId && (
+              <FusionReportPanel
+                sessionId={sessionId}
+                speechScore={speechScore}
+                gazeScore={gazeScore}
+                cognitiveScore={cognitiveScore}
+              />
+            )}
           </>
         )}
 
@@ -194,15 +216,22 @@ export const PatientDashboard: React.FC = () => {
             sessionId={sessionId || "mock-session-123"}
             age={demographics.age}
             education={demographics.education}
+            onComplete={(score) => { setCognitiveScore(score); setActiveView("dashboard"); }}
           />
         )}
 
         {activeView === "speech" && (
-          <AudioRecorderTask sessionId={sessionId || "mock-session-123"} />
+          <AudioRecorderTask
+            sessionId={sessionId || "mock-session-123"}
+            onComplete={(score) => { setSpeechScore(score); setActiveView("dashboard"); }}
+          />
         )}
 
         {activeView === "gaze" && (
-          <GazeTrackerTask sessionId={sessionId || "mock-session-123"} />
+          <GazeTrackerTask
+            sessionId={sessionId || "mock-session-123"}
+            onComplete={(score) => { setGazeScore(score); setActiveView("dashboard"); }}
+          />
         )}
       </main>
     </div>

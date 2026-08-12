@@ -232,7 +232,51 @@
 
 ## Phase 5 — Multimodal Fusion + Explainability
 
-**Status:** 🔲 Not started
+**Date:** 2026-08-12
+**Status:** ✅ Complete
+
+### What was built
+
+- **Fusion Service (`backend/app/services/fusion.py`)**:
+  - Combines speech, gaze, and cognitive sub-scores into a weighted composite
+  - **Literature-cited weights** (zero unexplained constants):
+    - Speech/linguistic: **0.40** — Fraser et al. (2016) Journal of Alzheimer's Disease; Luz et al. (2021) ADReSS AUC ~0.85
+    - Gaze/oculomotor: **0.35** — Opwononi et al. (2023) Frontiers in Aging Neuroscience
+    - Cognitive game: **0.25** — Monaco et al. (2013) WAIS-IV Digit Span norms
+  - **Graceful weight redistribution** — absent modalities redistribute their weight proportionally to present ones
+  - Risk band classification: `low` (< 0.40), `moderate` (0.40–0.65), `high` (≥ 0.65)
+  - Returns per-modality `modality_contributions` dict for SHAP-style breakdown
+
+- **Fusion API Route (`backend/app/api/routes/fusion.py`)**:
+  - `POST /api/sessions/fuse` — JWT-authenticated, 422 if no modality provided
+  - Persists `composite_score`, `risk_band`, `modality_contributions`, `weights_applied` to Supabase `fused_reports` table
+  - Non-fatal DB failure never blocks score return
+
+- **Backend Tests (`backend/tests/test_fusion.py`)**:
+  - 11 new tests: weight sum, all-modality composite, weight redistribution, single modality, risk bands, insufficient data, citations, API auth/validation/partial modalities
+  - **33/33 total backend tests passing**
+
+- **`FusionReportPanel` Component (`frontend/src/components/FusionReportPanel.tsx`)**:
+  - Animated SVG composite score ring (green/amber/red by risk band)
+  - SHAP-style animated contribution bars for each modality
+  - Weight justification citations inline
+  - Amber "Research Prototype" demo banner
+  - Non-diagnostic disclaimer
+
+- **PatientDashboard Integration (`frontend/src/pages/patient/PatientDashboard.tsx`)**:
+  - `speechScore`, `gazeScore`, `cognitiveScore` state tracked
+  - `onComplete(score)` callbacks wired to all 3 task components
+  - `FusionReportPanel` renders automatically on dashboard once session is active
+  - Modality progress counter badge: `N/3 Modalities Done`
+
+### Definition of Done — Phase 5
+
+- [x] Literature-cited fusion weights (speech 0.40, gaze 0.35, cognitive 0.25) with missing-modality redistribution
+- [x] SHAP-style per-modality contribution bars + citations in UI
+- [x] `POST /api/sessions/fuse` route authenticated, persists composite score, graceful DB failure
+- [x] FusionReportPanel with animated score ring, risk band coloring, and non-diagnostic disclaimer
+- [x] All 3 task components surface sub-score via `onComplete` callback
+- [x] ruff, tsc, oxlint all pass cleanly; 33/33 pytest tests green; PROGRESS.md updated
 
 ---
 

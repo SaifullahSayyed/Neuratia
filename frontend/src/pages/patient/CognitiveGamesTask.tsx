@@ -7,12 +7,14 @@ interface CognitiveGamesTaskProps {
   sessionId: string;
   age?: number;
   education?: string;
+  onComplete?: (score: number) => void;
 }
 
 export const CognitiveGamesTask: React.FC<CognitiveGamesTaskProps> = ({
   sessionId,
   age = 60,
   education = "secondary",
+  onComplete,
 }) => {
   const { token } = useAuth();
   const navigate = useNavigate();
@@ -94,6 +96,7 @@ export const CognitiveGamesTask: React.FC<CognitiveGamesTaskProps> = ({
       // Continue locally
     } finally {
       setSubmitting(false);
+      onComplete?.(normed.sub_score);
     }
   };
 

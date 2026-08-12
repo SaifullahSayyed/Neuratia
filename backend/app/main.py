@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes.auth import router as auth_router
+from app.api.routes.fusion import router as fusion_router
 from app.api.routes.gaze import router as gaze_router
 from app.api.routes.health import router as health_router
 from app.api.routes.sessions import router as sessions_router
@@ -44,6 +45,7 @@ app.include_router(auth_router)
 app.include_router(sessions_router)
 app.include_router(speech_router)
 app.include_router(gaze_router)
+app.include_router(fusion_router)
 
 
 @app.get("/", include_in_schema=False)

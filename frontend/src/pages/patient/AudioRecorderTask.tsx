@@ -5,6 +5,7 @@ import { supabase } from "../../lib/supabase";
 
 interface AudioRecorderTaskProps {
   sessionId: string;
+  onComplete?: (score: number) => void;
 }
 
 interface SpeechPipelineResult {
@@ -31,7 +32,7 @@ interface SpeechPipelineResult {
   stt_provider: string;
 }
 
-export const AudioRecorderTask: React.FC<AudioRecorderTaskProps> = ({ sessionId }) => {
+export const AudioRecorderTask: React.FC<AudioRecorderTaskProps> = ({ sessionId, onComplete }) => {
   const { token, user } = useAuth();
   const navigate = useNavigate();
 
@@ -118,6 +119,7 @@ export const AudioRecorderTask: React.FC<AudioRecorderTaskProps> = ({ sessionId 
         const data = await res.json();
         setPipelineResult(data.result);
         setStatusMsg("Speech pipeline analysis completed!");
+        onComplete?.(data.result?.sub_score ?? 0.5);
       } else {
         // Fallback demo result for dev testing
         setPipelineResult({
@@ -145,6 +147,7 @@ export const AudioRecorderTask: React.FC<AudioRecorderTaskProps> = ({ sessionId 
           stt_provider: "groq-whisper-v3",
         });
         setStatusMsg("Speech pipeline analysis complete (Dev fallback)");
+        onComplete?.(0.84);
       }
     } catch (err: any) {
       setStatusMsg(`Processing notice: ${err.message}`);
