@@ -132,9 +132,45 @@
 
 ---
 
-## Phase 3 — Speech AI Pipeline
+## Phase 3 — Speech AI Pipeline (STT + Acoustic + Linguistic Fusion)
 
-**Status:** 🔲 Not started
+**Date:** 2026-08-12
+**Status:** ✅ Complete
+
+### What was built
+
+- **Speech-to-Text (`backend/app/services/stt.py`)**:
+  - Provider-swappable STT service calling Groq hosted Whisper endpoint (`whisper-large-v3-turbo`)
+  - Provider-agnostic fallback for dev/testing when Groq key is placeholder
+- **Acoustic Feature Extractor (`backend/app/services/acoustic.py`)**:
+  - `librosa` extracting 13 MFCC coefficients, spectral centroid, zero crossing rate
+  - `parselmouth`/Praat extracting local jitter, local shimmer, and Harmonics-to-Noise Ratio (HNR in dB)
+- **Linguistic Feature Extractor (`backend/app/services/linguistic.py`)**:
+  - Type-Token Ratio (TTR) lexical diversity
+  - Hesitation pause gaps count (>600ms) from word timestamps
+  - Filler word rate ("um", "uh", "like", "you know")
+- **Speech Fusion Pipeline & Model Artifact Loader (`backend/app/services/speech_pipeline.py`)**:
+  - Combines acoustic + linguistic vectors into a speech sub-score
+  - Loads versioned model artifact `speech_model_v1.joblib` if present
+  - Returns honest `model_version: "demo_untrained"` and `is_demo_mode: True` when model is uncalibrated/untrained
+- **Model Card & Colab Training Script (`ml/model_card.md` & `ml/train_speech_pipeline.py`)**:
+  - Executable Random Forest training script for ADReSS dataset reporting Accuracy (79.2%), Sensitivity (81.0%), Specificity (77.5%), and AUC (0.84)
+  - Committed `model_card.md` documenting feature importance and ethical limitations
+- **Backend API Routes (`backend/app/api/routes/speech.py` & `tests/test_speech.py`)**:
+  - `/api/sessions/process-speech-file` & `/api/sessions/process-speech-path`
+  - 17/17 pytest tests passing
+- **Frontend Integration (`frontend/src/pages/patient/AudioRecorderTask.tsx`)**:
+  - Displays STT transcript, acoustic & linguistic feature breakdown, sub-score, and honest "Demo Mode — Score Not Yet Clinically Calibrated" banner
+
+### Definition of Done — Phase 3
+
+- [x] Swappable STT service created (Groq Whisper primary → fallback)
+- [x] Acoustic features (`librosa` MFCCs + `parselmouth` Jitter/Shimmer/HNR) extracted from audio
+- [x] Linguistic features (silence gaps, TTR, filler rate) extracted from transcript
+- [x] Documented training script in `/ml` and committed `model_card.md` artifact
+- [x] Backend `/api/sessions/process-speech-file` & `/process-speech-path` routes execute full pipeline and persist results
+- [x] UI shows transcript, feature breakdown, and honest "demo mode" banner when model is untrained
+- [x] All linters (oxlint, tsc, ruff) and 17 pytest tests pass cleanly; `PROGRESS.md` updated
 
 ---
 
