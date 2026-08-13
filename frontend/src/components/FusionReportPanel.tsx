@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useLang } from "../contexts/LangContext";
 import { ReportViewer } from "./ReportViewer";
+import { API_URL } from "../lib/api";
 
 interface FusionReportPanelProps {
   sessionId: string;
@@ -28,7 +29,6 @@ interface FusionResult {
   citations: string[];
 }
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const BAND_STYLES = {
   low: {

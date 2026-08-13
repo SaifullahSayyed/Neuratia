@@ -7,10 +7,10 @@ import { CognitiveGamesTask } from "./CognitiveGamesTask";
 import { AudioRecorderTask } from "./AudioRecorderTask";
 import { GazeTrackerTask } from "./GazeTrackerTask";
 import { FusionReportPanel } from "../../components/FusionReportPanel";
+import { API_URL } from "../../lib/api";
 
 type ActiveView = "dashboard" | "cognitive" | "speech" | "gaze";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 // ── Progress stepper ──────────────────────────────────────────
 const ProgressStepper: React.FC<{
