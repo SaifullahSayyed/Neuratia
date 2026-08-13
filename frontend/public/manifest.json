@@ -1,0 +1,28 @@
+{
+  "name": "NeuratiaDetect — Cognitive Screening",
+  "short_name": "Neuratia",
+  "description": "AI-powered early cognitive screening using speech, gaze, and cognitive games.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080c14",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "categories": ["medical", "health", "education"],
+  "lang": "en",
+  "dir": "ltr"
+}

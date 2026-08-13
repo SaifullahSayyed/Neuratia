@@ -1,14 +1,31 @@
-@import "tailwindcss";
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
+@import "tailwindcss";
+
+/* ── Design tokens ──────────────────────────────────────────── */
 :root {
   --font-body: 'Inter', sans-serif;
   --font-display: 'Space Grotesk', sans-serif;
+
+  --brand-violet: #7c3aed;
+  --brand-violet-light: #a78bfa;
+  --brand-fuchsia: #d946ef;
+  --brand-blue: #60a5fa;
+
+  /* Safe area insets for mobile notch/home-bar */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 }
 
-* {
+/* ── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -17,4 +34,188 @@ body {
   background: #080c14;
   color: #e2e8f0;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
+}
+
+/* ── Keyframe animations ────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(1deg); }
+  66% { transform: translateY(-6px) rotate(-1deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50% { opacity: 0.30; transform: scale(1.08); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes gauge-fill {
+  from { stroke-dasharray: 0 100; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes bar-grow {
+  from { width: 0%; }
+}
+
+/* ── Utility animation classes ──────────────────────────────── */
+.animate-float     { animation: float 6s ease-in-out infinite; }
+.animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+.animate-slide-up  { animation: slide-up 0.4s ease-out both; }
+.animate-slide-in-right { animation: slide-in-right 0.35s ease-out both; }
+.animate-fade-in   { animation: fade-in 0.3s ease-out both; }
+.animate-gauge     { animation: gauge-fill 1.2s ease-out both; }
+.animate-bar-grow  { animation: bar-grow 0.8s ease-out both; }
+
+/* Stagger helpers */
+.delay-100 { animation-delay: 0.10s; }
+.delay-200 { animation-delay: 0.20s; }
+.delay-300 { animation-delay: 0.30s; }
+.delay-400 { animation-delay: 0.40s; }
+.delay-500 { animation-delay: 0.50s; }
+
+/* ── Shimmer text ───────────────────────────────────────────── */
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #a78bfa 0%,
+    #60a5fa 40%,
+    #d946ef 70%,
+    #a78bfa 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+/* ── Glassmorphism cards ────────────────────────────────────── */
+.glass-card {
+  background: rgba(15, 20, 35, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+}
+
+.glass-card-hover {
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+}
+
+.glass-card-hover:hover {
+  border-color: rgba(124, 58, 237, 0.45);
+  box-shadow: 0 0 32px rgba(124, 58, 237, 0.12);
+  transform: translateY(-2px);
+}
+
+/* ── Gradient border on cards ───────────────────────────────── */
+.grad-border {
+  position: relative;
+  border-radius: 1rem;
+}
+
+.grad-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(124,58,237,0.5), rgba(96,165,250,0.3), rgba(217,70,239,0.4));
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: -1;
+}
+
+.grad-border:hover::before {
+  opacity: 1;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(124,58,237,0.6); }
+
+/* ── Touch targets — minimum 44x44px for mobile ─────────────── */
+button, a, [role="button"] {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Exception: inline text links */
+a.inline-link {
+  min-height: unset;
+  display: inline;
+}
+
+/* ── Mobile bottom navigation ───────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: var(--safe-bottom);
+  background: rgba(8, 12, 20, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: none;
+  z-index: 50;
+}
+
+@media (max-width: 768px) {
+  .bottom-nav { display: flex; }
+  .hide-on-mobile { display: none !important; }
+  .mobile-pb { padding-bottom: calc(72px + var(--safe-bottom)); }
+}
+
+/* ── Print styles (PDF export) ──────────────────────────────── */
+@media print {
+  body { background: white; color: #111; }
+  .no-print { display: none !important; }
+  .print-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    page-break-inside: avoid;
+  }
+}
+
+/* ── Focus ring ─────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid rgba(124, 58, 237, 0.7);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── RTL support ────────────────────────────────────────────── */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
 }

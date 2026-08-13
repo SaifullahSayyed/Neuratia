@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="40" fill="#080c14"/>
+  <circle cx="96" cy="96" r="60" fill="none" stroke="#7c3aed" stroke-width="6" opacity="0.3"/>
+  <circle cx="96" cy="96" r="40" fill="none" stroke="#7c3aed" stroke-width="4" opacity="0.5"/>
+  <!-- Brain-like curves -->
+  <path d="M70 80 Q80 60 96 70 Q112 60 122 80 Q140 90 130 110 Q120 130 96 125 Q72 130 62 110 Q52 90 70 80Z" 
+        fill="none" stroke="#a78bfa" stroke-width="3" stroke-linecap="round"/>
+  <path d="M96 70 L96 125" stroke="#7c3aed" stroke-width="2" opacity="0.5"/>
+  <path d="M70 96 Q85 88 96 96 Q107 104 122 96" stroke="#a78bfa" stroke-width="2" fill="none"/>
+  <!-- N letter -->
+  <text x="96" y="104" text-anchor="middle" font-family="system-ui, sans-serif" font-size="32" font-weight="700" fill="#a78bfa" opacity="0.8">N</text>
+</svg>

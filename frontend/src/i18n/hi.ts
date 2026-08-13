@@ -1,0 +1,78 @@
+import type { TranslationKeys } from "./en";
+
+export const hi: Record<TranslationKeys, string> = {
+  appName: "NeuratiaDetect",
+  patientPortal: "रोगी पोर्टल",
+  clinicianPortal: "चिकित्सक पोर्टल",
+  signIn: "स्क्रीनिंग पोर्टल में प्रवेश करें",
+  signOut: "साइन आउट",
+  dashboard: "डैशबोर्ड",
+  loading: "लोड हो रहा है...",
+  authenticating: "सत्र प्रमाणित हो रहा है...",
+
+  heroTitle: "संज्ञानात्मक स्क्रीनिंग,",
+  heroTitleHighlight: "AI द्वारा संचालित",
+  heroSubtitle: "Neuratia स्वतःस्फूर्त वाक् विश्लेषण, क्लाइंट-साइड गेज़ ट्रैकिंग और संज्ञानात्मक मिनी-गेम्स को मिलाकर चिकित्सकों के लिए जोखिम रिपोर्ट तैयार करता है।",
+  warningTitle: "⚠️ केवल स्क्रीनिंग सहायता — चिकित्सा निदान नहीं",
+  warningBody: "अनुसंधान प्रोटोटाइप। सभी स्कोर केवल सूचनात्मक संकेतक हैं।",
+  stat1Value: "3", stat1Label: "मॉडैलिटी",
+  stat2Value: "< 12", stat2Label: "मिनट",
+  stat3Value: "भारत", stat3Label: "प्रथम",
+  stat4Value: "शून्य", stat4Label: "हार्डवेयर",
+
+  welcomePatient: "स्वागत है,",
+  completeModules: "अपनी स्क्रीनिंग रिपोर्ट बनाने के लिए नीचे दिए गए 3 मूल्यांकन मॉड्यूल पूरे करें।",
+  activeSession: "सक्रिय सत्र:",
+  consentSigned: "सहमति हस्ताक्षरित",
+  modalitiesDone: "मॉडैलिटी पूर्ण",
+  startSession: "सूचित सहमति की समीक्षा करने और स्क्रीनिंग सत्र शुरू करने के लिए कोई भी कार्य पर क्लिक करें।",
+  progressStepper: "मूल्यांकन प्रगति",
+
+  speechTitle: "१. वाक् विश्लेषण",
+  speechDesc: "चित्र संकेत का वर्णन करते हुए स्वतःस्फूर्त भाषण रिकॉर्ड करें। ध्वनिक और विराम सुविधा निष्कर्षण।",
+  startSpeech: "वाक् कार्य प्रारंभ करें",
+
+  gazeTitle: "२. दृष्टि ट्रैकिंग",
+  gazeDesc: "ब्राउज़र MediaPipe WASM द्वारा संचालित 9-बिंदु कैलिब्रेशन, सुचारु अनुसरण और एंटीसेकेड कार्य।",
+  startGaze: "दृष्टि कार्य प्रारंभ करें",
+
+  cognitiveTitle: "३. संज्ञानात्मक खेल",
+  cognitiveDesc: "आयु और शिक्षा आधारभूत मानदंडों के विरुद्ध सामान्यीकृत अंक अवधि स्मृति कार्य।",
+  startCognitive: "संज्ञानात्मक खेल प्रारंभ करें",
+
+  fusionTitle: "मल्टीमोडल फ्यूजन रिपोर्ट",
+  generateReport: "रिपोर्ट बनाएं",
+  riskLow: "कम जोखिम",
+  riskModerate: "मध्यम जोखिम",
+  riskHigh: "उच्च जोखिम",
+  exportPdf: "PDF निर्यात करें",
+
+  consentTitle: "सूचित सहमति",
+  consentBody: "यह एक शोध स्क्रीनिंग उपकरण है। आपका डेटा संज्ञानात्मक जोखिम संकेतकों की गणना के लिए संसाधित किया जाएगा। कोई चिकित्सा निदान नहीं किया जाता। आप किसी भी समय रुक सकते हैं।",
+  consentAge: "आपकी आयु",
+  consentEducation: "शिक्षा स्तर",
+  consentAgree: "मैं सहमत हूं और शुरू करना चाहता/चाहती हूं",
+  consentCancel: "रद्द करें",
+  eduPrimary: "प्राथमिक (कक्षा 8 तक)",
+  eduSecondary: "माध्यमिक (कक्षा 9–12)",
+  eduGraduate: "स्नातक",
+  eduPostgrad: "स्नातकोत्तर",
+
+  linkedPatients: "जुड़े हुए मरीज़",
+  noPatients: "कोई जुड़ा हुआ मरीज़ रिकॉर्ड नहीं मिला।",
+  lastSession: "अंतिम सत्र",
+  sessions: "सत्र",
+  riskTrend: "जोखिम स्कोर प्रवृत्ति",
+  modalityBreakdown: "मॉडैलिटी विश्लेषण",
+  sessionHistory: "सत्र इतिहास",
+  viewReport: "रिपोर्ट देखें",
+  patientAge: "आयु",
+  patientSessions: "कुल सत्र",
+
+  serverOk: "सर्वर ठीक है",
+  serverUnreachable: "सर्वर अनुपलब्ध — अपना कनेक्शन या Render डैशबोर्ड जांचें",
+
+  langEn: "EN",
+  langHi: "हिं",
+  langUr: "اُر",
+};

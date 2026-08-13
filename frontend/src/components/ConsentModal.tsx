@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLang } from "../contexts/LangContext";
 
 interface ConsentModalProps {
   onConsent: (age: number, education: string) => void;
@@ -6,6 +7,7 @@ interface ConsentModalProps {
 }
 
 export const ConsentModal: React.FC<ConsentModalProps> = ({ onConsent, onCancel }) => {
+  const { t } = useLang();
   const [agreed, setAgreed] = useState(false);
   const [age, setAge] = useState<number>(60);
   const [education, setEducation] = useState<string>("secondary");
@@ -21,9 +23,7 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({ onConsent, onCancel 
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
       <div className="bg-slate-900 border border-white/10 max-w-lg w-full rounded-2xl p-6 space-y-5 shadow-2xl text-slate-200">
         <div className="border-b border-white/10 pb-3">
-          <h2 className="text-xl font-bold text-white font-['Space_Grotesk']">
-            Assessment Session Consent & Demographics
-          </h2>
+          <h2 className="text-xl font-bold text-white font-['Space_Grotesk']">{t("consentTitle")}</h2>
           <p className="text-slate-400 text-xs mt-1">
             Required prior to beginning speech, gaze, or cognitive screening modules.
           </p>

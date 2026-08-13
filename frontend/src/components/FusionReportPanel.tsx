@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { useLang } from "../contexts/LangContext";
 import { ReportViewer } from "./ReportViewer";
 
 interface FusionReportPanelProps {
@@ -59,6 +60,51 @@ const MODALITY_LABELS: Record<string, string> = {
   cognitive: "Cognitive Games",
 };
 
+// ── Animated SVG arc gauge ───────────────────────────────────
+const ArcGauge: React.FC<{ percent: number; band: string }> = ({ percent, band }) => {
+  const circleRef = useRef<SVGCircleElement>(null);
+  const R = 42; const C = 2 * Math.PI * R;
+  const target = (percent / 100) * C;
+  const color = band === "high" ? "#f43f5e" : band === "moderate" ? "#f59e0b" : "#10b981";
+  const glowColor = band === "high" ? "rgba(244,63,94,0.4)" : band === "moderate" ? "rgba(245,158,11,0.4)" : "rgba(16,185,129,0.4)";
+
+  useEffect(() => {
+    const el = circleRef.current;
+    if (!el) return;
+    el.style.strokeDasharray = `0 ${C}`;
+    const raf = requestAnimationFrame(() => {
+      el.style.transition = `stroke-dasharray 1.4s cubic-bezier(0.34,1.56,0.64,1)`;
+      el.style.strokeDasharray = `${target} ${C - target}`;
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [percent, target, C]);
+
+  return (
+    <div className="relative w-28 h-28 flex-shrink-0">
+      <svg className="w-28 h-28 -rotate-90" viewBox="0 0 100 100">
+        <defs>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+            <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+        {/* Track */}
+        <circle cx="50" cy="50" r={R} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="8" />
+        {/* Glow shadow */}
+        <circle cx="50" cy="50" r={R} fill="none" stroke={glowColor} strokeWidth="10"
+          strokeDasharray={`${target} ${C - target}`} strokeLinecap="round" filter="url(#glow)" />
+        {/* Main arc */}
+        <circle ref={circleRef} cx="50" cy="50" r={R} fill="none" stroke={color} strokeWidth="7"
+          strokeLinecap="round" style={{ strokeDasharray: `0 ${C}` }} />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-2xl font-extrabold text-white leading-none">{percent}%</span>
+        <span className="text-[9px] text-slate-400 mt-0.5">risk</span>
+      </div>
+    </div>
+  );
+};
+
 export const FusionReportPanel: React.FC<FusionReportPanelProps> = ({
   sessionId,
   speechScore,
@@ -66,6 +112,7 @@ export const FusionReportPanel: React.FC<FusionReportPanelProps> = ({
   cognitiveScore,
 }) => {
   const { token } = useAuth();
+  const { t } = useLang();
   const [result, setResult] = useState<FusionResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,21 +150,24 @@ export const FusionReportPanel: React.FC<FusionReportPanelProps> = ({
   const compositePercent = result ? Math.round(result.composite_score * 100) : 0;
   const styles = result ? BAND_STYLES[result.risk_band] : null;
 
+  const handleExportPDF = () => window.print();
+
   return (
-    <div className="bg-slate-900/60 border border-white/10 rounded-2xl p-6 space-y-5 text-slate-200">
+    <div className="glass-card p-5 md:p-6 space-y-5 text-slate-200 print-card">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between no-print">
         <div>
-          <h3 className="text-lg font-bold text-white font-['Space_Grotesk']">
-            Multimodal Fusion Report
-          </h3>
+          <h3 className="text-lg font-bold text-white font-['Space_Grotesk']">{t("fusionTitle")}</h3>
           <p className="text-[11px] text-slate-400 mt-0.5">
             Literature-weighted composite of all modality sub-scores
           </p>
         </div>
-        <span className="text-[10px] px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 font-mono">
-          Phase 5
-        </span>
+        {result && (
+          <button onClick={handleExportPDF}
+            className="px-3 py-1 text-[11px] rounded-lg bg-slate-800/60 border border-white/10 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors min-h-0">
+            {t("exportPdf")} ↗
+          </button>
+        )}
       </div>
 
       {/* Inputs Summary */}
@@ -151,9 +201,14 @@ export const FusionReportPanel: React.FC<FusionReportPanelProps> = ({
           id="btn-generate-fusion-report"
           onClick={handleFuse}
           disabled={loading}
-          className="w-full py-3 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 disabled:opacity-50 text-white font-semibold text-sm shadow-lg shadow-violet-600/30 transition-all duration-200"
+          className="w-full py-3 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 disabled:opacity-50 text-white font-semibold text-sm shadow-lg shadow-violet-600/30 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99]"
         >
-          {loading ? "Computing Fusion Score…" : "Generate Fusion Report ✦"}
+          {loading ? (
+            <span className="flex items-center gap-2 justify-center">
+              <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Computing Fusion Score…
+            </span>
+          ) : `${t("generateReport")} ✦`}
         </button>
       )}
 
@@ -171,32 +226,16 @@ export const FusionReportPanel: React.FC<FusionReportPanelProps> = ({
             🔬 <strong>Research Prototype:</strong> {result.score_label}
           </div>
 
-          {/* Composite Score Ring */}
+          {/* Composite Score Ring — animated arc gauge */}
           <div className={`flex items-center gap-5 p-4 rounded-2xl ring-1 ${styles.ring} ${styles.bg}`}>
-            <div className="relative w-24 h-24 flex-shrink-0">
-              <svg className="w-24 h-24 -rotate-90" viewBox="0 0 36 36">
-                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#ffffff0d" strokeWidth="3" />
-                <circle
-                  cx="18" cy="18" r="15.9" fill="none"
-                  strokeWidth="3"
-                  stroke={result.risk_band === "high" ? "#f43f5e" : result.risk_band === "moderate" ? "#f59e0b" : "#10b981"}
-                  strokeDasharray={`${compositePercent} ${100 - compositePercent}`}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-extrabold text-white">{compositePercent}%</span>
-              </div>
-            </div>
+            <ArcGauge percent={compositePercent} band={result.risk_band} />
             <div>
               <div className={`text-base font-bold ${styles.text}`}>
                 {styles.emoji} {result.risk_label}
               </div>
               <div className="text-[11px] text-slate-400 mt-1 leading-relaxed max-w-[220px]">
                 Composite risk signal derived from{" "}
-                <strong className="text-slate-300">
-                  {3 - result.missing_modalities.length}/3
-                </strong>{" "}
+                <strong className="text-slate-300">{3 - result.missing_modalities.length}/3</strong>{" "}
                 modalities.
               </div>
               {result.missing_modalities.length > 0 && (

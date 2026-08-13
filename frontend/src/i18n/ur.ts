@@ -1,0 +1,78 @@
+import type { TranslationKeys } from "./en";
+
+export const ur: Record<TranslationKeys, string> = {
+  appName: "NeuratiaDetect",
+  patientPortal: "مریض پورٹل",
+  clinicianPortal: "معالج پورٹل",
+  signIn: "اسکریننگ پورٹل میں داخل ہوں",
+  signOut: "سائن آؤٹ",
+  dashboard: "ڈیش بورڈ",
+  loading: "لوڈ ہو رہا ہے...",
+  authenticating: "سیشن کی تصدیق ہو رہی ہے...",
+
+  heroTitle: "ذہنی صحت کی اسکریننگ،",
+  heroTitleHighlight: "AI کے ذریعے",
+  heroSubtitle: "Neuratia تقریری تجزیہ، نگاہ کی ٹریکنگ اور ذہنی کھیلوں کو ملا کر معالجین کے لیے خطرے کی رپورٹ تیار کرتا ہے۔",
+  warningTitle: "⚠️ صرف اسکریننگ مددگار — طبی تشخیص نہیں",
+  warningBody: "تحقیقی پروٹوٹائپ۔ تمام اسکور صرف معلوماتی اشارے ہیں۔",
+  stat1Value: "٣", stat1Label: "طریقے",
+  stat2Value: "< ١٢", stat2Label: "منٹ",
+  stat3Value: "ہندوستان", stat3Label: "اول",
+  stat4Value: "صفر", stat4Label: "ہارڈویئر",
+
+  welcomePatient: "خوش آمدید،",
+  completeModules: "اپنی اسکریننگ رپورٹ بنانے کے لیے نیچے دیے گئے ٣ جائزہ ماڈیول مکمل کریں۔",
+  activeSession: "فعال سیشن:",
+  consentSigned: "رضامندی دستخط شدہ",
+  modalitiesDone: "طریقے مکمل",
+  startSession: "باخبر رضامندی کا جائزہ لینے اور اسکریننگ سیشن شروع کرنے کے لیے کوئی بھی کام پر کلک کریں۔",
+  progressStepper: "جائزے کی پیش رفت",
+
+  speechTitle: "۱۔ تقریری تجزیہ",
+  speechDesc: "تصویر کی تفصیل بیان کرتے ہوئے خودبخود تقریر ریکارڈ کریں۔ صوتی اور وقفہ خصوصیت کا اخراج۔",
+  startSpeech: "تقریری کام شروع کریں",
+
+  gazeTitle: "۲۔ نگاہ ٹریکنگ",
+  gazeDesc: "براؤزر MediaPipe WASM سے چلنے والے ٩ نقطہ کیلیبریشن، ہموار تعاقب اور اینٹی سکیڈ کام۔",
+  startGaze: "نگاہ کام شروع کریں",
+
+  cognitiveTitle: "۳۔ ذہنی کھیل",
+  cognitiveDesc: "عمر اور تعلیم کی بنیادی معیارات کے خلاف معمول پر لایا گیا ہندسے کی یادداشت کا کام۔",
+  startCognitive: "ذہنی کھیل شروع کریں",
+
+  fusionTitle: "ملٹی موڈل فیوژن رپورٹ",
+  generateReport: "رپورٹ بنائیں",
+  riskLow: "کم خطرہ",
+  riskModerate: "درمیانہ خطرہ",
+  riskHigh: "زیادہ خطرہ",
+  exportPdf: "PDF برآمد کریں",
+
+  consentTitle: "باخبر رضامندی",
+  consentBody: "یہ ایک تحقیقی اسکریننگ آلہ ہے۔ آپ کا ڈیٹا ذہنی خطرے کے اشاریوں کی حساب کاری کے لیے استعمال ہوگا۔ کوئی طبی تشخیص نہیں کی جاتی۔ آپ کسی بھی وقت رک سکتے ہیں۔",
+  consentAge: "آپ کی عمر",
+  consentEducation: "تعلیمی سطح",
+  consentAgree: "میں رضامند ہوں اور شروع کرنا چاہتا/چاہتی ہوں",
+  consentCancel: "منسوخ کریں",
+  eduPrimary: "ابتدائی (جماعت ٨ تک)",
+  eduSecondary: "ثانوی (جماعت ٩–١٢)",
+  eduGraduate: "گریجویٹ",
+  eduPostgrad: "پوسٹ گریجویٹ",
+
+  linkedPatients: "منسلک مریض",
+  noPatients: "کوئی منسلک مریض ریکارڈ نہیں ملا۔",
+  lastSession: "آخری سیشن",
+  sessions: "سیشن",
+  riskTrend: "خطرے کے اسکور کا رجحان",
+  modalityBreakdown: "طریقوں کا تجزیہ",
+  sessionHistory: "سیشن کی تاریخ",
+  viewReport: "رپورٹ دیکھیں",
+  patientAge: "عمر",
+  patientSessions: "کل سیشن",
+
+  serverOk: "سرور ٹھیک ہے",
+  serverUnreachable: "سرور ناقابل رسائی — اپنا کنکشن یا Render ڈیش بورڈ چیک کریں",
+
+  langEn: "EN",
+  langHi: "हिं",
+  langUr: "اُر",
+};
